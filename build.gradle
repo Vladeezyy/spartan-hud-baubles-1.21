@@ -76,7 +76,10 @@ dependencies {
     // Curios (required): its API at compile time, the full mod in the dev runs
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
     localRuntime "top.theillusivec4.curios:curios-neoforge:${curios_version}"
-    localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    // JEI needs NeoForge 21.1.238+: -Pno_jei for runs on older NeoForge (-Pneo_version=21.1.197)
+    if (!project.hasProperty('no_jei')) {
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    }
     // Popular client / performance mods for compatibility runs (-Pwith_compat)
     if (project.hasProperty('with_compat')) {
         localRuntime "maven.modrinth:sodium:${compat_sodium}"

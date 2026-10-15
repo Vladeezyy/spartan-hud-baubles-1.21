@@ -5,7 +5,8 @@
 # -Pwith_compat).
 cd "$(dirname "$0")/.."
 rm -rf run/saves/shb_scene run/saves/shb_stress run/screenshots/scene_*.png build-scene.log
-# The stress scene starts with a broken config file (the original crashed on an unknown skin_type)
+# Every run starts with the default config; the stress scene with a broken config file (the original crashed on an unknown skin_type)
+rm -f run/config/spartanhudbaubles-client.toml
 case "$*" in *scene=stress*)
 	mkdir -p run/config
 	printf 'skin_type = "FOO"\nalignment = 5\noffset_x = 99999\n' > run/config/spartanhudbaubles-client.toml ;;

@@ -26,7 +26,7 @@ three are in the jar (`LICENSE_spartanhudbaubles`, `licenses/spartanhudbaubles/`
   (`config.spartanhudbaubles:client.alignment` → `spartanhudbaubles.configuration.alignment`), and `tools/lang/*.json`
   on top (the port's new strings and the other five languages). Never edit `src/main/resources/assets` by hand.
 - **Tests** (long, run in the background):
-  - `tools/scenetest.sh` — client scene `port/DevScene` (83 checks, screenshots; `-Pscene_lang=ru_ru`, `-Pwith_compat`);
+  - `tools/scenetest.sh` — client scene `port/DevScene` (83 checks, screenshots; `-Pscene_lang=ru_ru`, `-Pwith_compat`, `-Pneo_version=21.1.197 -Pno_jei`);
   - `tools/scenetest.sh -Pscene=stress` — `port/StressScene` (broken config file, 74 Curios, frame rate, churn, every
     GUI scale, small window, extreme values, rejoining);
   - `tools/nettest.sh` — `port/NetScene`: a dev client joins a dev dedicated server, Curios are equipped with `/curios`;
@@ -82,3 +82,14 @@ on 1.21 any mod that adds Curios slots or items is supported.
 - Accessories (another 1.21 accessory API) is not supported directly; with its Curios compatibility layer it should work
   through the Curios API (not tested).
 - Curios versions older than 9.5.1 are not tested, hence the range.
+
+## Test results (2026-10-15)
+
+| Run | Result |
+| --- | --- |
+| `tools/scenetest.sh` (NeoForge 21.1.262, Curios 9.5.1, JEI) | 83/83 checks, no errors |
+| `tools/scenetest.sh -Pneo_version=21.1.197 -Pno_jei` (the oldest NeoForge of the range, on the client; JEI 19.64 needs 21.1.238+) | 83/83 |
+| `tools/scenetest.sh -Pwith_compat` (+ Sodium 0.6.13, Iris 1.8.12, Lithium, FerriteCore, ModernFix, Jade, EMI) | 83/83; the log errors are EMI + JEI duplicate recipe ids and Sodium mixins for absent mods |
+| `tools/scenetest.sh -Pscene=stress` | 14/14; 74 Curios on the HUD: 84–96 % of the frame rate without the element (two runs) |
+| `tools/nettest.sh` (dev dedicated server) | 6/6, no errors on either side |
+| Release jar, real NeoForge 21.1.197 and 21.1.259 servers, alone and with Curios 9.5.1 | starts ("Done"), 0 errors |
