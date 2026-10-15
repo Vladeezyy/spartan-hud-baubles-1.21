@@ -1,0 +1,15 @@
+*.iml
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+*.log
+.DS_Store
+.gradle
+.idea/
+.vscode/
+build-*.log
+build-*.out
+build/
+out/
+prodtest/*/
+run-*/
+run/
