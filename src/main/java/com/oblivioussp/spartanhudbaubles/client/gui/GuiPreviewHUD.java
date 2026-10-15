@@ -6,9 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
@@ -33,7 +31,9 @@ public class GuiPreviewHUD extends Screen
 
 	private final Screen parentScreen;
 	private HudElementBaubles hud;
-	private Button doneButton;
+	private final Component hint = Component.translatable(ModSpartanHUDBaubles.ID + ".configuration.preview_hud.hint");
+	// Where the title and the hint are drawn (top, or the middle when the HUD element is at the top centre)
+	private int textY = 8;
 
 	public GuiPreviewHUD(Screen parent)
 	{
@@ -42,14 +42,15 @@ public class GuiPreviewHUD extends Screen
 		hud = new HudElementBaubles(true);
 	}
 
+	/**
+	 * Port: the original had a lone Done button above the crosshair; a page with nothing but one button looked like a
+	 * leftover, so the preview now closes with a click anywhere (or Escape) and says so at the top
+	 */
 	@Override
-	protected void init()
+	public boolean mouseClicked(double mouseX, double mouseY, int button)
 	{
-		// Port: at the top under the title (the original's button floated above the crosshair, which looks like a
-		// leftover in 1.21); back at the original spot when the HUD element itself is at the top centre
-		Component doneTitle = CommonComponents.GUI_DONE;
-		int doneWidth = Math.max(font.width(doneTitle) + 20, 60);
-		doneButton = addRenderableWidget(Button.builder(doneTitle, button -> onClose()).bounds(width / 2 - doneWidth / 2, 22, doneWidth, 20).build());
+		onClose();
+		return true;
 	}
 
 	@Override
@@ -69,9 +70,11 @@ public class GuiPreviewHUD extends Screen
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
-		doneButton.setY(overlapsHud(width / 2 - doneButton.getWidth() / 2, 6, doneButton.getWidth(), 36) ? height / 2 - 50 : 22);
+		int textWidth = Math.max(font.width(title), font.width(hint)) + 8;
+		textY = overlapsHud(width / 2 - textWidth / 2, 4, textWidth, 26) ? height / 2 - 50 : 8;
 		super.render(graphics, mouseX, mouseY, partialTicks);
-		graphics.drawCenteredString(font, title, width / 2, doneButton.getY() - 14, 0xFFFFFF);
+		graphics.drawCenteredString(font, title, width / 2, textY, 0xFFFFFF);
+		graphics.drawCenteredString(font, hint, width / 2, textY + 12, 0xA0A0A0);
 
 		HumanoidArm offhandSide = minecraft.options.mainHand().get().getOpposite();
 
@@ -138,9 +141,9 @@ public class GuiPreviewHUD extends Screen
 		return hudX < x + w && x < hudX + hud.getWidth() && hudY < y + h && y < hudY + hud.getHeight();
 	}
 	
-	public Button getDoneButton()
+	public int getTextY()
 	{
-		return doneButton;
+		return textY;
 	}
 	
 	public HudElementBaubles getHud()

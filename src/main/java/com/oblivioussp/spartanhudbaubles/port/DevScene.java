@@ -266,7 +266,7 @@ public final class DevScene
 			if(mc.screen instanceof GuiPreviewHUD preview)
 			{
 				check("preview: 7 dummy slots, bottom right", preview.getHud().getWidth() == 130 && preview.getHud().getLastX() == mc.getWindow().getGuiScaledWidth() - 130, preview.getHud().getLastX());
-				check("preview: Done button at the top, under the title", preview.getDoneButton().getY() == 22, preview.getDoneButton().getY());
+				check("preview: no lone button, title and hint at the top", preview.children().isEmpty() && preview.getTextY() == 8, preview.children().size() + ", text at " + preview.getTextY());
 			}
 			mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0);
 		});
@@ -282,12 +282,16 @@ public final class DevScene
 		at(t += 3, mc -> Config.ALIGNMENT.set(Alignment.TOP_CENTER));
 		at(t += 3, mc -> {
 			if(mc.screen instanceof GuiPreviewHUD preview)
-				check("preview: Done button moves out of a top centre HUD", preview.getDoneButton().getY() == preview.height / 2 - 50, preview.getDoneButton().getY());
+				check("preview: title and hint move out of a top centre HUD", preview.getTextY() == preview.height / 2 - 50, preview.getTextY());
 			shot(mc, "preview_top_center");
 			Config.ALIGNMENT.set(Alignment.BOTTOM_RIGHT);
 		});
-		at(t += 3, mc -> mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0));
+		at(t += 3, mc -> {
+			// A click anywhere closes the preview
+			mc.screen.mouseClicked(100, 100, 0);
+		});
 		at(t += 5, mc -> {
+			check("a click anywhere closes the preview", mc.screen instanceof GuiConfigSHB, mc.screen);
 			mc.screen.onClose();
 			watchScreens = 12;
 		});
@@ -451,6 +455,25 @@ public final class DevScene
 			check("menu step " + menuTick + " ran", false, e);
 			Log.error("[scene] menu step failed", e);
 		}
+	}
+
+	private static String lastScreen = "";
+	private static int screenShots;
+
+	/** Logs and saves every new look of a screen (its class and widgets), to see every screen the player sees */
+	@SubscribeEvent
+	public static void onScreenRendered(net.neoforged.neoforge.client.event.ScreenEvent.Render.Post event)
+	{
+		if(!ENABLED)
+			return;
+		List<AbstractWidget> found = new ArrayList<>();
+		collectWidgets(event.getScreen().children(), found);
+		String signature = event.getScreen().getClass().getSimpleName() + " " + found.stream().filter(w -> w.visible).map(w -> w.getMessage().getString() + "@" + w.getX() + "," + w.getY()).toList();
+		if(signature.equals(lastScreen))
+			return;
+		lastScreen = signature;
+		Log.info("[scene] SCREEN " + screenShots + " " + signature);
+		shot(Minecraft.getInstance(), "screen_" + screenShots++);
 	}
 
 	@SubscribeEvent
@@ -779,7 +802,7 @@ public final class DevScene
 	private static void checkTranslations()
 	{
 		List<String> keys = new ArrayList<>();
-		for(String key : List.of("preview_hud", "hover_text_example", "disable_hud", "skin_type", "alignment", "offset_x", "offset_y", "rotate_vertical",
+		for(String key : List.of("preview_hud", "preview_hud.hint", "hover_text_example", "disable_hud", "skin_type", "alignment", "offset_x", "offset_y", "rotate_vertical",
 				"show_baubles_icon", "show_empty_slots", "max_slots_per_line", "tooltip_background_colour", "tooltip_frame_top_colour",
 				"tooltip_frame_bottom_colour", "minimal_top_colour", "minimal_bottom_colour", "red", "green", "blue", "alpha", "title"))
 			keys.add(ModSpartanHUDBaubles.ID + ".configuration." + key);

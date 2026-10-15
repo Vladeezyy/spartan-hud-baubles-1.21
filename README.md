@@ -81,7 +81,7 @@ Settings: **Mods → Spartan HUD: Baubles → Config**, or `config/spartanhudbau
 
 Everything of 1.0.0 is in the port; Baubles became Curios. The Curios are shown in the order of the Curios inventory;
 slot types that Curios hides, disabled slots and cosmetic slots are left out. The Curios inventory button replaces the
-Baubles icon. The Preview HUD's **Done** button sits at the top under a title instead of floating over the crosshair.
+Baubles icon. The Preview HUD has no lone **Done** button floating over the crosshair any more: it closes with a click anywhere or Escape, as the hint at its top says.
 
 | Original issue | Fix |
 | --- | --- |
@@ -130,7 +130,7 @@ compatibility layer; not tested).
 
 ## Testing
 
-- **Client scene** (`tools/scenetest.sh`): 83 checks — what the element collects and where it is for 1, 2, 7 and 12
+- **Client scene** (`tools/scenetest.sh`): 84 checks — what the element collects and where it is for 1, 2, 7 and 12
   Curios, wrapped rows, empty slots, every skin, all 9 alignments horizontal and vertical, offsets, F1, spectator, live
   durability, a Curio breaking in its slot, the config GUI and the preview through real clicks, the saved file, the main
   menu preview, translations. That the element is really drawn is checked by comparing the frame with one drawn
@@ -205,8 +205,8 @@ from its official pages.
 ## Что изменилось при порте
 
 Всё из 1.0.0 перенесено; Baubles заменён на Curios. Предметы идут в порядке инвентаря Curios; скрытые Curios типы
-ячеек, отключённые и косметические ячейки не показываются. Вместо значка Baubles — кнопка инвентаря Curios. Кнопка
-**Done** в предпросмотре теперь вверху под заголовком, а не висит над прицелом.
+ячеек, отключённые и косметические ячейки не показываются. Вместо значка Baubles — кнопка инвентаря Curios. Вместо одинокой кнопки
+**Done** над прицелом предпросмотр закрывается щелчком в любом месте или Esc, о чём говорит подсказка вверху.
 
 | Issue оригинала | Исправление |
 | --- | --- |
@@ -257,7 +257,7 @@ from its official pages.
 
 ## Тестирование
 
-- **Клиентская сцена** (`tools/scenetest.sh`): 83 проверки — что элемент собирает и где стоит при 1, 2, 7 и 12
+- **Клиентская сцена** (`tools/scenetest.sh`): 84 проверки — что элемент собирает и где стоит при 1, 2, 7 и 12
   предметах, перенос рядов, пустые ячейки, все оформления, все 9 положений по горизонтали и вертикали, сдвиги, F1,
   наблюдатель, прочность на лету, поломка предмета в ячейке, окно настроек и предпросмотр настоящими кликами, сохранение
   файла, предпросмотр из главного меню, переводы. Что элемент действительно нарисован, проверяется сравнением кадра с

@@ -21,6 +21,7 @@
   "spartanhudbaubles.configuration.minimal_top_colour.tooltip": "Top colour for the minimal skin variant",
   "spartanhudbaubles.configuration.offset_x.tooltip": "X offset of the Baubles HUD Element. Can be used to adjust the X position",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Y offset of the Baubles HUD Element. Can be used to adjust the Y position",
+  "spartanhudbaubles.configuration.preview_hud.hint": "Click or press Esc to return",
   "spartanhudbaubles.configuration.red": "Red",
   "spartanhudbaubles.configuration.rotate_vertical.tooltip": "Set to true to rotate the Baubles HUD Element vertically or false for horizontally",
   "spartanhudbaubles.configuration.section.spartanhudbaubles.client.toml": "Client Settings",

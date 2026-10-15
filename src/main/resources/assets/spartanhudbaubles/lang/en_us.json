@@ -29,6 +29,7 @@
   "spartanhudbaubles.configuration.offset_y": "HUD Y-Offset",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Y offset of the Baubles HUD Element. Can be used to adjust the Y position",
   "spartanhudbaubles.configuration.preview_hud": "Preview HUD",
+  "spartanhudbaubles.configuration.preview_hud.hint": "Click or press Esc to return",
   "spartanhudbaubles.configuration.red": "Red",
   "spartanhudbaubles.configuration.rotate_vertical": "HUD Vertical Rotation",
   "spartanhudbaubles.configuration.rotate_vertical.tooltip": "Set to true to rotate the Baubles HUD Element vertically or false for horizontally",

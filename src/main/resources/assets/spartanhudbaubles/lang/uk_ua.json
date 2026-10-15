@@ -29,6 +29,7 @@
   "spartanhudbaubles.configuration.offset_y": "Зсув HUD по Y",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Зсув елемента HUD дрібничок по вертикалі, щоб він не перекривав HUD інших модів",
   "spartanhudbaubles.configuration.preview_hud": "Попередній перегляд HUD",
+  "spartanhudbaubles.configuration.preview_hud.hint": "Клацніть або натисніть Esc, щоб повернутися",
   "spartanhudbaubles.configuration.red": "Червоний",
   "spartanhudbaubles.configuration.rotate_vertical": "Вертикальний HUD",
   "spartanhudbaubles.configuration.rotate_vertical.tooltip": "Розташовувати дрібнички стовпчиком, а не рядком",

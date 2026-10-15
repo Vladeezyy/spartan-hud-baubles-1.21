@@ -29,6 +29,7 @@
   "spartanhudbaubles.configuration.offset_y": "Сдвиг HUD по Y",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Сдвиг элемента HUD безделушек по вертикали, чтобы он не перекрывал HUD других модов",
   "spartanhudbaubles.configuration.preview_hud": "Предпросмотр HUD",
+  "spartanhudbaubles.configuration.preview_hud.hint": "Щёлкните или нажмите Esc, чтобы вернуться",
   "spartanhudbaubles.configuration.red": "Красный",
   "spartanhudbaubles.configuration.rotate_vertical": "Вертикальный HUD",
   "spartanhudbaubles.configuration.rotate_vertical.tooltip": "Располагать безделушки столбцом, а не строкой",

@@ -29,6 +29,7 @@
   "spartanhudbaubles.configuration.offset_y": "HUD-Y-Versatz",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Vertikaler Versatz des Schmuck-HUD-Elements, z. B. damit es keine HUD-Elemente anderer Mods verdeckt",
   "spartanhudbaubles.configuration.preview_hud": "HUD-Vorschau",
+  "spartanhudbaubles.configuration.preview_hud.hint": "Klicken oder Esc drücken, um zurückzukehren",
   "spartanhudbaubles.configuration.red": "Rot",
   "spartanhudbaubles.configuration.rotate_vertical": "HUD senkrecht",
   "spartanhudbaubles.configuration.rotate_vertical.tooltip": "Den Schmuck untereinander statt nebeneinander anzeigen",

@@ -29,6 +29,7 @@
   "spartanhudbaubles.configuration.offset_y": "Desplazamiento Y del HUD",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Desplazamiento vertical del HUD de abalorios, por ejemplo para no tapar el HUD de otros mods",
   "spartanhudbaubles.configuration.preview_hud": "Vista previa del HUD",
+  "spartanhudbaubles.configuration.preview_hud.hint": "Haz clic o pulsa Esc para volver",
   "spartanhudbaubles.configuration.red": "Rojo",
   "spartanhudbaubles.configuration.rotate_vertical": "HUD vertical",
   "spartanhudbaubles.configuration.rotate_vertical.tooltip": "Mostrar los abalorios en columna en lugar de en fila",

@@ -26,7 +26,7 @@ three are in the jar (`LICENSE_spartanhudbaubles`, `licenses/spartanhudbaubles/`
   (`config.spartanhudbaubles:client.alignment` → `spartanhudbaubles.configuration.alignment`), and `tools/lang/*.json`
   on top (the port's new strings and the other five languages). Never edit `src/main/resources/assets` by hand.
 - **Tests** (long, run in the background):
-  - `tools/scenetest.sh` — client scene `port/DevScene` (83 checks, screenshots; `-Pscene_lang=ru_ru`, `-Pwith_compat`, `-Pneo_version=21.1.197 -Pno_jei`);
+  - `tools/scenetest.sh` — client scene `port/DevScene` (84 checks, screenshots; `-Pscene_lang=ru_ru`, `-Pwith_compat`, `-Pneo_version=21.1.197 -Pno_jei`);
   - `tools/scenetest.sh -Pscene=stress` — `port/StressScene` (broken config file, 74 Curios, frame rate, churn, every
     GUI scale, small window, extreme values, rejoining);
   - `tools/nettest.sh` — `port/NetScene`: a dev client joins a dev dedicated server, Curios are equipped with `/curios`;
@@ -53,8 +53,9 @@ three are in the jar (`LICENSE_spartanhudbaubles`, `licenses/spartanhudbaubles/`
 - **Rendering**: `RenderGameOverlayEvent.Post(EXPERIENCE)` → a GUI layer `spartanhudbaubles:baubles` above
   `experience_level`. Hidden with F1, for spectators, with `disable_hud` and behind the Preview HUD screen.
 - **Preview HUD**: the mock vanilla HUD (hotbar, offhand slot, crosshair, experience bar, armor, hearts, food, the
-  item name) is drawn from the 1.21 HUD sprites. Its **Done** button floated above the crosshair; it is now at the top
-  under a "Preview HUD" title, and moves back to the old spot only when the HUD element itself is at the top centre.
+  item name) is drawn from the 1.21 HUD sprites. The original's only widget there was a **Done** button above the
+  crosshair, which looked like a leftover on an otherwise empty page; the preview now closes with a click anywhere or
+  Escape, and a title with that hint is drawn at the top (in the middle when the HUD element is at the top centre).
 - **API**: `RenderBaubleOnHUDEvent.Pre` / `Post` are NeoForge events on `NeoForge.EVENT_BUS`; `ScaledResolution`,
   `GuiIngame` and `FontRenderer` became `GuiGraphics` (its `guiWidth()` / `guiHeight()`) and `Font`; the Curios slot
   type and index are new.
@@ -87,9 +88,9 @@ on 1.21 any mod that adds Curios slots or items is supported.
 
 | Run | Result |
 | --- | --- |
-| `tools/scenetest.sh` (NeoForge 21.1.262, Curios 9.5.1, JEI) | 83/83 checks, no errors |
-| `tools/scenetest.sh -Pneo_version=21.1.197 -Pno_jei` (the oldest NeoForge of the range, on the client; JEI 19.64 needs 21.1.238+) | 83/83 |
-| `tools/scenetest.sh -Pwith_compat` (+ Sodium 0.6.13, Iris 1.8.12, Lithium, FerriteCore, ModernFix, Jade, EMI) | 83/83; the log errors are EMI + JEI duplicate recipe ids and Sodium mixins for absent mods |
+| `tools/scenetest.sh` (NeoForge 21.1.262, Curios 9.5.1, JEI) | 84/84 checks, no errors (also in Russian) |
+| `tools/scenetest.sh -Pneo_version=21.1.197 -Pno_jei` (the oldest NeoForge of the range, on the client; JEI 19.64 needs 21.1.238+) | 84/84 |
+| `tools/scenetest.sh -Pwith_compat` (+ Sodium 0.6.13, Iris 1.8.12, Lithium, FerriteCore, ModernFix, Jade, EMI) | 84/84; the log errors are EMI + JEI duplicate recipe ids and Sodium mixins for absent mods |
 | `tools/scenetest.sh -Pscene=stress` | 14/14; 74 Curios on the HUD: 84–96 % of the frame rate without the element (two runs) |
 | `tools/nettest.sh` (dev dedicated server) | 6/6, no errors on either side |
 | Release jar, real NeoForge 21.1.197 and 21.1.259 servers, alone and with Curios 9.5.1 | starts ("Done"), 0 errors |

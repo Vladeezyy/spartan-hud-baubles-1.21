@@ -29,6 +29,7 @@
   "spartanhudbaubles.configuration.offset_y": "Deslocamento Y do HUD",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Deslocamento vertical do HUD de bugigangas, por exemplo para não cobrir o HUD de outros mods",
   "spartanhudbaubles.configuration.preview_hud": "Pré-visualizar HUD",
+  "spartanhudbaubles.configuration.preview_hud.hint": "Clique ou pressione Esc para voltar",
   "spartanhudbaubles.configuration.red": "Vermelho",
   "spartanhudbaubles.configuration.rotate_vertical": "HUD vertical",
   "spartanhudbaubles.configuration.rotate_vertical.tooltip": "Mostrar as bugigangas em coluna em vez de em linha",
