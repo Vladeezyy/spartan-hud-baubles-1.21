@@ -91,21 +91,23 @@ public final class DevScene
 	private static int[] baseline;
 	private static int baselineWidth;
 	private static ItemStack brokenRing;
+	// Ticks left in which the open screen is logged and saved (closing the config GUI)
+	private static int watchScreens;
+	private static int watchShots;
 
 	static
 	{
 		int t = 40;
 		at(t, mc -> server(mc, DevScene::setup));
-		at(t += 5, mc -> server(mc, DevScene::slotsDataPack));
-		at(t += 60, DevScene::checkSlots);
+		at(t += 20, DevScene::checkSlots);
 		// Nothing equipped: nothing drawn
-		measure(t += 5, "no curios", () -> {}, mc -> {
+		t = measure(t + 5, "no curios", () -> {}, mc -> {
 			check("no curios: nothing collected", HudElementBaubles.getActive() == null || HudElementBaubles.getActive().getLastRendered().isEmpty(), "");
 			check("no curios: no bauble rendered", framePre.isEmpty(), framePre.size());
 		});
 		// The original's screenshot: two rings with the default config
 		at(t += 20, mc -> server(mc, p -> equip(p, twoRings())));
-		measure(t += 20, "two rings", () -> {}, mc -> {
+		t = measure(t + 20, "two rings", () -> {}, mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			int gw = mc.getWindow().getGuiScaledWidth(), gh = mc.getWindow().getGuiScaledHeight();
 			check("two rings: collected in slot order", slots(hud.getLastRendered()).equals(List.of("ring#0", "ring#1")), slots(hud.getLastRendered()));
@@ -119,7 +121,7 @@ public final class DevScene
 		at(t += 2, mc -> shot(mc, "default_two"));
 		// Seven: the most Baubles had
 		at(t += 3, mc -> server(mc, p -> equip(p, firstOf(allItems(), 7))));
-		measure(t += 15, "seven", () -> {}, mc -> {
+		t = measure(t + 15, "seven", () -> {}, mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			check("seven: 130 x 22 as in the original", hud.getWidth() == 130 && hud.getHeight() == 22 && framePre.size() == 7, hud.getWidth() + "x" + hud.getHeight() + ", " + framePre.size() + " drawn");
 			checkDrawn(mc, "seven: hotbar skin drawn", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
@@ -127,7 +129,7 @@ public final class DevScene
 		at(t += 2, mc -> shot(mc, "seven"));
 		// Twelve: the original drew no hotbar skin for more than seven (issue #1)
 		at(t += 3, mc -> server(mc, p -> equip(p, allItems())));
-		measure(t += 15, "twelve", () -> {}, mc -> {
+		t = measure(t + 15, "twelve", () -> {}, mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			check("twelve: collected in Curios slot order", slots(hud.getLastRendered()).equals(List.of("curio#0", "curio#1", "head#0", "necklace#0", "back#0", "body#0", "bracelet#0", "hands#0", "ring#0", "ring#1", "belt#0", "charm#0")),
 					slots(hud.getLastRendered()));
@@ -151,14 +153,14 @@ public final class DevScene
 			check("broken ring leaves the HUD without opening the inventory (issue #2)", !slots(hud.getLastRendered()).contains("ring#1") && framePre.size() == 11, slots(hud.getLastRendered()));
 		});
 		// More lines
-		measure(t += 5, "wrapped", () -> Config.MAX_SLOTS_PER_LINE.set(5), mc -> {
+		t = measure(t + 5, "wrapped", () -> Config.MAX_SLOTS_PER_LINE.set(5), mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			check("max 5 per line: 11 slots in 3 rows, 94 x 58", hud.getWidth() == 94 && hud.getHeight() == 58, hud.getWidth() + "x" + hud.getHeight());
 			check("max 5 per line: 6th slot starts row 2", framePre.size() == 11 && framePre.get(5)[0] == framePre.get(0)[0] && framePre.get(5)[1] == framePre.get(0)[1] + 18, positions(framePre));
 			checkDrawn(mc, "max 5 per line: grid skin drawn", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
 		});
 		at(t += 2, mc -> shot(mc, "wrapped"));
-		measure(t += 3, "wrapped vertical", () -> Config.ROTATE_VERTICAL.set(true), mc -> {
+		t = measure(t + 3, "wrapped vertical", () -> Config.ROTATE_VERTICAL.set(true), mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			check("vertical, max 5: 3 columns, 58 x 94", hud.getWidth() == 58 && hud.getHeight() == 94, hud.getWidth() + "x" + hud.getHeight());
 			checkDrawn(mc, "vertical, max 5: grid skin drawn", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
@@ -170,10 +172,10 @@ public final class DevScene
 		});
 		// Empty slots (issue #1 asks for them)
 		at(t += 3, mc -> server(mc, p -> equip(p, twoRings())));
-		measure(t += 15, "empty slots", () -> Config.SHOW_EMPTY_SLOTS.set(true), mc -> {
+		t = measure(t + 15, "empty slots", () -> Config.SHOW_EMPTY_SLOTS.set(true), mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			List<Bauble> shown = hud.getLastRendered();
-			check("show_empty_slots: all 13 slots, 2 of them with an item", shown.size() == 13 && shown.stream().filter(b -> !b.stack().isEmpty()).count() == 2 && framePre.size() == 2, shown.size() + ", drawn " + framePre.size());
+			check("show_empty_slots: all 12 slots, 2 of them with an item", shown.size() == 12 && shown.stream().filter(b -> !b.stack().isEmpty()).count() == 2 && framePre.size() == 2, slots(shown) + ", drawn " + framePre.size());
 			long missing = shown.stream().filter(b -> b.stack().isEmpty()).filter(b -> mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(b.icon()).contents().name().equals(MissingTextureAtlasSprite.getLocation())).count();
 			check("show_empty_slots: every empty slot has its Curios icon", missing == 0, missing + " missing");
 			checkDrawn(mc, "show_empty_slots: skin drawn", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
@@ -184,18 +186,18 @@ public final class DevScene
 		});
 		// Skins
 		at(t += 3, mc -> server(mc, p -> equip(p, firstOf(allItems(), 6))));
-		measure(t += 15, "tooltip skin", () -> Config.SKIN_TYPE.set(SkinType.TOOLTIP_STYLE), mc -> {
+		t = measure(t + 15, "tooltip skin", () -> Config.SKIN_TYPE.set(SkinType.TOOLTIP_STYLE), mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			checkDrawn(mc, "tooltip skin drawn", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
 		});
 		at(t += 2, mc -> shot(mc, "skin_tooltip"));
-		measure(t += 3, "minimal skin", () -> Config.SKIN_TYPE.set(SkinType.MINIMAL), mc -> {
+		t = measure(t + 3, "minimal skin", () -> Config.SKIN_TYPE.set(SkinType.MINIMAL), mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			// The gradient starts transparent at the top: check its lower half
 			checkDrawn(mc, "minimal skin drawn", hud.getLastX(), hud.getLastY() + hud.getHeight() / 2, hud.getWidth(), hud.getHeight() / 2, true);
 		});
 		at(t += 2, mc -> shot(mc, "skin_minimal"));
-		measure(t += 3, "no skin", () -> Config.SKIN_TYPE.set(SkinType.NONE), mc -> {
+		t = measure(t + 3, "no skin", () -> Config.SKIN_TYPE.set(SkinType.NONE), mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			check("no skin: items still drawn", framePre.size() == 6, framePre.size());
 			checkDrawn(mc, "no skin: no Curios icon", hud.getLastX() - 11, hud.getLastY() + 6, 10, 10, false);
@@ -206,7 +208,7 @@ public final class DevScene
 		// Alignments: every one stays on the screen and keeps clear of the crosshair and the hotbar as in the original
 		for(Alignment alignment : Alignment.values())
 			for(boolean vertical : new boolean[] { false, true })
-				measure(t += 12, alignment + (vertical ? " vertical" : ""), () -> {
+				t = measure(t + 4, alignment + (vertical ? " vertical" : ""), () -> {
 					Config.ALIGNMENT.set(alignment);
 					Config.ROTATE_VERTICAL.set(vertical);
 				}, mc -> checkAlignment(mc, alignment, vertical));
@@ -262,7 +264,10 @@ public final class DevScene
 		at(t += 3, mc -> shot(mc, "preview_ingame"));
 		at(t += 3, mc -> {
 			if(mc.screen instanceof GuiPreviewHUD preview)
+			{
 				check("preview: 7 dummy slots, bottom right", preview.getHud().getWidth() == 130 && preview.getHud().getLastX() == mc.getWindow().getGuiScaledWidth() - 130, preview.getHud().getLastX());
+				check("preview: Done button at the top, under the title", preview.getDoneButton().getY() == 22, preview.getDoneButton().getY());
+			}
 			mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0);
 		});
 		at(t += 5, mc -> {
@@ -274,8 +279,18 @@ public final class DevScene
 			click(mc, previewButton(mc.screen));
 		});
 		at(t += 5, mc -> shot(mc, "preview_ingame_tooltip"));
+		at(t += 3, mc -> Config.ALIGNMENT.set(Alignment.TOP_CENTER));
+		at(t += 3, mc -> {
+			if(mc.screen instanceof GuiPreviewHUD preview)
+				check("preview: Done button moves out of a top centre HUD", preview.getDoneButton().getY() == preview.height / 2 - 50, preview.getDoneButton().getY());
+			shot(mc, "preview_top_center");
+			Config.ALIGNMENT.set(Alignment.BOTTOM_RIGHT);
+		});
 		at(t += 3, mc -> mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0));
-		at(t += 5, mc -> mc.screen.onClose());
+		at(t += 5, mc -> {
+			mc.screen.onClose();
+			watchScreens = 12;
+		});
 		at(t += 10, mc -> {
 			String file = readConfigFile();
 			check("closing the config GUI saves the file", mc.screen == null && file.contains("skin_type = \"TOOLTIP_STYLE\""), file.lines().filter(l -> l.contains("skin_type")).findFirst().orElse(file.isEmpty() ? "no file" : "no skin_type"));
@@ -302,7 +317,7 @@ public final class DevScene
 	/**
 	 * Draws one frame without the HUD element, applies the config change, then compares (10 ticks in all)
 	 */
-	static void measure(int t, String name, Runnable configure, Consumer<Minecraft> checks)
+	static int measure(int t, String name, Runnable configure, Consumer<Minecraft> checks)
 	{
 		at(t, mc -> {
 			configure.run();
@@ -313,6 +328,7 @@ public final class DevScene
 			Config.DISABLE_HUD.set(false);
 		});
 		at(t + 8, checks);
+		return t + 8;
 	}
 
 	@SubscribeEvent
@@ -347,9 +363,28 @@ public final class DevScene
 			mc.options.cloudStatus().set(CloudStatus.OFF);
 			mc.options.pauseOnLostFocus = false;
 			mc.resizeDisplay();
-			LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(), WorldDataConfiguration.DEFAULT);
+			// The slot data pack is in the world from the start (Curios does not send new slot types to a player who is
+			// already in the world after /reload; mods' slots exist at login anyway)
+			try
+			{
+				writeSlotsDataPack(mc.getLevelSource().getBaseDir().resolve(WORLD).resolve("datapacks/shb_slots"));
+			}
+			catch(IOException e)
+			{
+				check("test data pack written", false, e);
+			}
+			WorldDataConfiguration packs = new WorldDataConfiguration(new net.minecraft.world.level.DataPackConfig(List.of("vanilla", "mod_data", "file/shb_slots"), List.of()),
+					net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS);
+			LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(), packs);
 			mc.createWorldOpenFlows().createFreshLevel(WORLD, settings, new WorldOptions(20261013L, false, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
 			return;
+		}
+		if(watchScreens > 0)
+		{
+			watchScreens--;
+			Log.info("[scene] screen after closing: " + (mc.screen == null ? "none" : mc.screen.getClass().getName()));
+			if(mc.screen != null && !(mc.screen instanceof TitleScreen))
+				shot(mc, "closing_" + watchShots++);
 		}
 		if(menuPhase)
 		{
@@ -401,6 +436,7 @@ public final class DevScene
 				case 50 -> {
 					mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0);
 					mc.screen.onClose();
+					watchScreens = 8;
 				}
 				case 60 -> {
 					check("main menu: back on the title screen", mc.screen instanceof TitleScreen, mc.screen);
@@ -488,26 +524,7 @@ public final class DevScene
 		player.teleportTo(player.serverLevel(), spawn.getX() + 0.5, y, spawn.getZ() + 0.5, 30.0F, 5.0F);
 	}
 
-	/**
-	 * Gives players all ten Curios slot types (two ring and two curio slots) and makes the scene's items valid in
-	 * them, with a data pack in the world and /reload
-	 */
-	static void slotsDataPack(ServerPlayer player)
-	{
-		MinecraftServer server = player.getServer();
-		Path pack = server.getWorldPath(LevelResource.DATAPACK_DIR).resolve("shb_slots");
-		try
-		{
-			writeSlotsDataPack(pack);
-		}
-		catch(IOException e)
-		{
-			check("test data pack written", false, e);
-			return;
-		}
-		server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), "reload");
-	}
-
+	/** Gives players all ten Curios slot types (two ring and two curio slots) and makes the scene's items valid in them */
 	static void writeSlotsDataPack(Path pack) throws IOException
 	{
 		Files.createDirectories(pack.resolve("data/shb_test/curios/entities"));
@@ -598,6 +615,8 @@ public final class DevScene
 
 	static void checkSlots(Minecraft mc)
 	{
+		server(mc, p -> Log.info("[scene] server: packs " + p.getServer().getPackRepository().getSelectedIds() + ", player slots " + CuriosApi.getPlayerSlots(p).keySet()
+				+ ", inventory " + CuriosApi.getCuriosInventory(p).map(i -> i.getCurios().keySet()).orElse(null)));
 		Map<String, Integer> sizes = new LinkedHashMap<>();
 		CuriosApi.getCuriosInventory(mc.player).ifPresent(inventory -> inventory.getCurios().forEach((id, handler) -> sizes.put(id, handler.getSlots())));
 		check("data pack: the client has the 10 slot types, 2 ring and 2 curio slots", sizes.size() == 10 && sizes.getOrDefault("ring", 0) == 2 && sizes.getOrDefault("curio", 0) == 2, sizes);

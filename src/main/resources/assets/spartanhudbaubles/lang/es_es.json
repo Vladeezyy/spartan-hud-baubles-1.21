@@ -19,8 +19,10 @@
   "spartanhudbaubles.configuration.max_slots_per_line": "Espacios por fila",
   "spartanhudbaubles.configuration.max_slots_per_line.tooltip": "Cuántos espacios caben en una fila (o columna, si el HUD es vertical) antes de empezar otra. 0 = los que quepan en la pantalla",
   "spartanhudbaubles.configuration.minimal_bottom_colour": "Mínimo: color inferior",
+  "spartanhudbaubles.configuration.minimal_bottom_colour.button": "Editar color",
   "spartanhudbaubles.configuration.minimal_bottom_colour.tooltip": "Color inferior del degradado del aspecto «Mínimo»",
   "spartanhudbaubles.configuration.minimal_top_colour": "Mínimo: color superior",
+  "spartanhudbaubles.configuration.minimal_top_colour.button": "Editar color",
   "spartanhudbaubles.configuration.minimal_top_colour.tooltip": "Color superior del degradado del aspecto «Mínimo»",
   "spartanhudbaubles.configuration.offset_x": "Desplazamiento X del HUD",
   "spartanhudbaubles.configuration.offset_x.tooltip": "Desplazamiento horizontal del HUD de abalorios, por ejemplo para no tapar el HUD de otros mods",
@@ -44,9 +46,12 @@
   "spartanhudbaubles.configuration.skin_type.tooltip_style": "Descripción emergente",
   "spartanhudbaubles.configuration.title": "Configuración de %s",
   "spartanhudbaubles.configuration.tooltip_background_colour": "Descripción: color de fondo",
+  "spartanhudbaubles.configuration.tooltip_background_colour.button": "Editar color",
   "spartanhudbaubles.configuration.tooltip_background_colour.tooltip": "Color de fondo del aspecto «Descripción emergente»",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour": "Descripción: color inferior del marco",
+  "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.button": "Editar color",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.tooltip": "Color inferior del marco del aspecto «Descripción emergente»",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour": "Descripción: color superior del marco",
+  "spartanhudbaubles.configuration.tooltip_frame_top_colour.button": "Editar color",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour.tooltip": "Color superior del marco del aspecto «Descripción emergente»"
 }

@@ -19,8 +19,10 @@
   "spartanhudbaubles.configuration.max_slots_per_line": "Espaços por linha",
   "spartanhudbaubles.configuration.max_slots_per_line.tooltip": "Quantos espaços cabem numa linha (ou coluna, se o HUD for vertical) antes de começar outra. 0 = quantos couberem na tela",
   "spartanhudbaubles.configuration.minimal_bottom_colour": "Mínimo: cor inferior",
+  "spartanhudbaubles.configuration.minimal_bottom_colour.button": "Editar cor",
   "spartanhudbaubles.configuration.minimal_bottom_colour.tooltip": "Cor inferior do degradê da aparência \"Mínimo\"",
   "spartanhudbaubles.configuration.minimal_top_colour": "Mínimo: cor superior",
+  "spartanhudbaubles.configuration.minimal_top_colour.button": "Editar cor",
   "spartanhudbaubles.configuration.minimal_top_colour.tooltip": "Cor superior do degradê da aparência \"Mínimo\"",
   "spartanhudbaubles.configuration.offset_x": "Deslocamento X do HUD",
   "spartanhudbaubles.configuration.offset_x.tooltip": "Deslocamento horizontal do HUD de bugigangas, por exemplo para não cobrir o HUD de outros mods",
@@ -44,9 +46,12 @@
   "spartanhudbaubles.configuration.skin_type.tooltip_style": "Dica de ferramenta",
   "spartanhudbaubles.configuration.title": "Configurações de %s",
   "spartanhudbaubles.configuration.tooltip_background_colour": "Dica: cor de fundo",
+  "spartanhudbaubles.configuration.tooltip_background_colour.button": "Editar cor",
   "spartanhudbaubles.configuration.tooltip_background_colour.tooltip": "Cor de fundo da aparência \"Dica de ferramenta\"",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour": "Dica: cor inferior da moldura",
+  "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.button": "Editar cor",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.tooltip": "Cor inferior da moldura da aparência \"Dica de ferramenta\"",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour": "Dica: cor superior da moldura",
+  "spartanhudbaubles.configuration.tooltip_frame_top_colour.button": "Editar cor",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour.tooltip": "Cor superior da moldura da aparência \"Dica de ferramenta\""
 }

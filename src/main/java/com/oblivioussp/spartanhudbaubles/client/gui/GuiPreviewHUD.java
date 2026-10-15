@@ -33,6 +33,7 @@ public class GuiPreviewHUD extends Screen
 
 	private final Screen parentScreen;
 	private HudElementBaubles hud;
+	private Button doneButton;
 
 	public GuiPreviewHUD(Screen parent)
 	{
@@ -44,9 +45,11 @@ public class GuiPreviewHUD extends Screen
 	@Override
 	protected void init()
 	{
+		// Port: at the top under the title (the original's button floated above the crosshair, which looks like a
+		// leftover in 1.21); back at the original spot when the HUD element itself is at the top centre
 		Component doneTitle = CommonComponents.GUI_DONE;
-		int doneWidth = font.width(doneTitle) + 20;
-		addRenderableWidget(Button.builder(doneTitle, button -> onClose()).bounds(width / 2 - doneWidth / 2, height / 2 - 50, doneWidth, 20).build());
+		int doneWidth = Math.max(font.width(doneTitle) + 20, 60);
+		doneButton = addRenderableWidget(Button.builder(doneTitle, button -> onClose()).bounds(width / 2 - doneWidth / 2, 22, doneWidth, 20).build());
 	}
 
 	@Override
@@ -66,7 +69,9 @@ public class GuiPreviewHUD extends Screen
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
 	{
+		doneButton.setY(overlapsHud(width / 2 - doneButton.getWidth() / 2, 6, doneButton.getWidth(), 36) ? height / 2 - 50 : 22);
 		super.render(graphics, mouseX, mouseY, partialTicks);
+		graphics.drawCenteredString(font, title, width / 2, doneButton.getY() - 14, 0xFFFFFF);
 
 		HumanoidArm offhandSide = minecraft.options.mainHand().get().getOpposite();
 
@@ -127,6 +132,17 @@ public class GuiPreviewHUD extends Screen
 		hud.render(graphics);
 	}
 
+	private boolean overlapsHud(int x, int y, int w, int h)
+	{
+		int hudX = hud.getLastX(), hudY = hud.getLastY();
+		return hudX < x + w && x < hudX + hud.getWidth() && hudY < y + h && y < hudY + hud.getHeight();
+	}
+	
+	public Button getDoneButton()
+	{
+		return doneButton;
+	}
+	
 	public HudElementBaubles getHud()
 	{
 		return hud;

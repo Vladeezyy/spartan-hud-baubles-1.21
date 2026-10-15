@@ -19,8 +19,10 @@
   "spartanhudbaubles.configuration.max_slots_per_line": "Комірок у ряду",
   "spartanhudbaubles.configuration.max_slots_per_line.tooltip": "Скільки комірок вміщується в один рядок (або стовпчик, якщо HUD вертикальний), перш ніж почнеться наступний. 0 — скільки вміщується на екран",
   "spartanhudbaubles.configuration.minimal_bottom_colour": "Мінімальне: колір унизу",
+  "spartanhudbaubles.configuration.minimal_bottom_colour.button": "Змінити колір",
   "spartanhudbaubles.configuration.minimal_bottom_colour.tooltip": "Колір низу градієнта для оформлення «Мінімальне»",
   "spartanhudbaubles.configuration.minimal_top_colour": "Мінімальне: колір угорі",
+  "spartanhudbaubles.configuration.minimal_top_colour.button": "Змінити колір",
   "spartanhudbaubles.configuration.minimal_top_colour.tooltip": "Колір верху градієнта для оформлення «Мінімальне»",
   "spartanhudbaubles.configuration.offset_x": "Зсув HUD по X",
   "spartanhudbaubles.configuration.offset_x.tooltip": "Зсув елемента HUD дрібничок по горизонталі, щоб він не перекривав HUD інших модів",
@@ -44,9 +46,12 @@
   "spartanhudbaubles.configuration.skin_type.tooltip_style": "Підказка",
   "spartanhudbaubles.configuration.title": "Налаштування %s",
   "spartanhudbaubles.configuration.tooltip_background_colour": "Підказка: колір фону",
+  "spartanhudbaubles.configuration.tooltip_background_colour.button": "Змінити колір",
   "spartanhudbaubles.configuration.tooltip_background_colour.tooltip": "Колір фону для оформлення «Підказка»",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour": "Підказка: колір рамки внизу",
+  "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.button": "Змінити колір",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.tooltip": "Колір низу рамки для оформлення «Підказка»",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour": "Підказка: колір рамки вгорі",
+  "spartanhudbaubles.configuration.tooltip_frame_top_colour.button": "Змінити колір",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour.tooltip": "Колір верху рамки для оформлення «Підказка»"
 }

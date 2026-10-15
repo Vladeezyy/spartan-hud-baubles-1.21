@@ -19,8 +19,10 @@
   "spartanhudbaubles.configuration.max_slots_per_line": "Plätze pro Reihe",
   "spartanhudbaubles.configuration.max_slots_per_line.tooltip": "Wie viele Plätze in eine Reihe (bzw. Spalte bei senkrechtem HUD) passen, bevor eine neue beginnt. 0 = so viele, wie auf den Bildschirm passen",
   "spartanhudbaubles.configuration.minimal_bottom_colour": "Minimal: Farbe unten",
+  "spartanhudbaubles.configuration.minimal_bottom_colour.button": "Farbe bearbeiten",
   "spartanhudbaubles.configuration.minimal_bottom_colour.tooltip": "Untere Verlaufsfarbe des Aussehens „Minimal“",
   "spartanhudbaubles.configuration.minimal_top_colour": "Minimal: Farbe oben",
+  "spartanhudbaubles.configuration.minimal_top_colour.button": "Farbe bearbeiten",
   "spartanhudbaubles.configuration.minimal_top_colour.tooltip": "Obere Verlaufsfarbe des Aussehens „Minimal“",
   "spartanhudbaubles.configuration.offset_x": "HUD-X-Versatz",
   "spartanhudbaubles.configuration.offset_x.tooltip": "Horizontaler Versatz des Schmuck-HUD-Elements, z. B. damit es keine HUD-Elemente anderer Mods verdeckt",
@@ -44,9 +46,12 @@
   "spartanhudbaubles.configuration.skin_type.tooltip_style": "Tooltip",
   "spartanhudbaubles.configuration.title": "%s – Einstellungen",
   "spartanhudbaubles.configuration.tooltip_background_colour": "Tooltip: Hintergrundfarbe",
+  "spartanhudbaubles.configuration.tooltip_background_colour.button": "Farbe bearbeiten",
   "spartanhudbaubles.configuration.tooltip_background_colour.tooltip": "Hintergrundfarbe des Aussehens „Tooltip“",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour": "Tooltip: Rahmenfarbe unten",
+  "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.button": "Farbe bearbeiten",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.tooltip": "Untere Rahmenfarbe des Aussehens „Tooltip“",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour": "Tooltip: Rahmenfarbe oben",
+  "spartanhudbaubles.configuration.tooltip_frame_top_colour.button": "Farbe bearbeiten",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour.tooltip": "Obere Rahmenfarbe des Aussehens „Tooltip“"
 }

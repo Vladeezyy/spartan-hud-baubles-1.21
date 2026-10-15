@@ -15,7 +15,9 @@
   "spartanhudbaubles.configuration.green": "Green",
   "spartanhudbaubles.configuration.max_slots_per_line": "Max Slots per Line",
   "spartanhudbaubles.configuration.max_slots_per_line.tooltip": "How many slots fit in one row (or column, if rotated vertically) before the HUD Element starts a new one. 0 = as many as fit on the screen",
+  "spartanhudbaubles.configuration.minimal_bottom_colour.button": "Edit Color",
   "spartanhudbaubles.configuration.minimal_bottom_colour.tooltip": "Bottom colour for the minimal skin variant",
+  "spartanhudbaubles.configuration.minimal_top_colour.button": "Edit Color",
   "spartanhudbaubles.configuration.minimal_top_colour.tooltip": "Top colour for the minimal skin variant",
   "spartanhudbaubles.configuration.offset_x.tooltip": "X offset of the Baubles HUD Element. Can be used to adjust the X position",
   "spartanhudbaubles.configuration.offset_y.tooltip": "Y offset of the Baubles HUD Element. Can be used to adjust the Y position",
@@ -32,7 +34,10 @@
   "spartanhudbaubles.configuration.skin_type.tooltip": "Skin variant to display behind the Baubles in the HUD Element",
   "spartanhudbaubles.configuration.skin_type.tooltip_style": "Tooltip",
   "spartanhudbaubles.configuration.title": "%s Config",
+  "spartanhudbaubles.configuration.tooltip_background_colour.button": "Edit Color",
   "spartanhudbaubles.configuration.tooltip_background_colour.tooltip": "Background colour for the tooltip skin variant",
+  "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.button": "Edit Color",
   "spartanhudbaubles.configuration.tooltip_frame_bottom_colour.tooltip": "Frame bottom colour for the tooltip skin variant",
+  "spartanhudbaubles.configuration.tooltip_frame_top_colour.button": "Edit Color",
   "spartanhudbaubles.configuration.tooltip_frame_top_colour.tooltip": "Frame top colour for the tooltip skin variant"
 }
