@@ -5,6 +5,11 @@
 # -Pwith_compat).
 cd "$(dirname "$0")/.."
 rm -rf run/saves/shb_scene run/saves/shb_stress run/screenshots/scene_*.png build-scene.log
+# The stress scene starts with a broken config file (the original crashed on an unknown skin_type)
+case "$*" in *scene=stress*)
+	mkdir -p run/config
+	printf 'skin_type = "FOO"\nalignment = 5\noffset_x = 99999\n' > run/config/spartanhudbaubles-client.toml ;;
+esac
 perl -e 'alarm 900; exec @ARGV' ./gradlew runScene --console=plain "$@" > build-scene.log 2>&1 &
 gradle_pid=$!
 while kill -0 $gradle_pid 2>/dev/null; do
