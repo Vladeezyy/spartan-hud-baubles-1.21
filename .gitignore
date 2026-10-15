@@ -13,3 +13,4 @@ out/
 prodtest/*/
 run-*/
 run/
+prodtest/*.out
