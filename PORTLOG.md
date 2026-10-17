@@ -91,6 +91,13 @@ on 1.21 any mod that adds Curios slots or items is supported.
 | `tools/scenetest.sh` (NeoForge 21.1.262, Curios 9.5.1, JEI) | 84/84 checks, no errors (also in Russian) |
 | `tools/scenetest.sh -Pneo_version=21.1.197 -Pno_jei` (the oldest NeoForge of the range, on the client; JEI 19.64 needs 21.1.238+) | 84/84 |
 | `tools/scenetest.sh -Pwith_compat` (+ Sodium 0.6.13, Iris 1.8.12, Lithium, FerriteCore, ModernFix, Jade, EMI) | 84/84; the log errors are EMI + JEI duplicate recipe ids and Sodium mixins for absent mods |
-| `tools/scenetest.sh -Pscene=stress` | 14/14; 74 Curios on the HUD: 84–96 % of the frame rate without the element (two runs) |
+| `tools/scenetest.sh -Pscene=stress` | 14/14; 74 Curios on the HUD: 84–96 % of the frame rate without the element (two runs); 94.5–96.7 % after the per-tick slot list (2026-10-17) |
 | `tools/nettest.sh` (dev dedicated server) | 6/6, no errors on either side |
 | Release jar, real NeoForge 21.1.197 and 21.1.259 servers, alone and with Curios 9.5.1 | starts ("Done"), 0 errors |
+
+## Performance check (2026-10-17)
+
+- The HUD collected and sorted the Curios slots every frame (a Curios slot type lookup for every comparison of the
+  sort). The list is now collected once per game tick and drawn from that between ticks: the slots only change with
+  the game ticks. 74 Curios: 94.5-96.7 % of the frame rate without the element (84-96 % before), stress scene 14/14.
+

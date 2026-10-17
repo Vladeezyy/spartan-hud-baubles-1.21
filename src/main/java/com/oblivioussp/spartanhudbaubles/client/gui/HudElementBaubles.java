@@ -97,6 +97,26 @@ public class HudElementBaubles extends HudElement
 		return baubles;
 	}
 
+	// The list of the last game tick: collecting and sorting the Curios slots every frame (a slot type lookup per
+	// comparison) cost up to a sixth of the frame with many Curios; the slots only change with the game ticks
+	private static List<Bauble> cached = List.of();
+	private static long cachedTick = Long.MIN_VALUE;
+	private static Player cachedPlayer;
+	private static boolean cachedShowEmpty;
+
+	private static List<Bauble> cachedBaubles(Player player, boolean showEmpty)
+	{
+		long tick = player.level().getGameTime();
+		if(tick != cachedTick || player != cachedPlayer || showEmpty != cachedShowEmpty)
+		{
+			cached = collectBaubles(player, showEmpty);
+			cachedTick = tick;
+			cachedPlayer = player;
+			cachedShowEmpty = showEmpty;
+		}
+		return cached;
+	}
+
 	private static java.util.Optional<ISlotType> slotType(Player player, String identifier)
 	{
 		return CuriosApi.getSlot(identifier, player.level());
@@ -118,9 +138,9 @@ public class HudElementBaubles extends HudElement
 		Minecraft mc = Minecraft.getInstance();
 		List<Bauble> baublesToRender = List.of();
 
-		// Fetch the item stacks to render if preview mode is not enabled
+		// Fetch the item stacks to render if preview mode is not enabled (once per game tick, see cachedBaubles)
 		if(!isPreview)
-			baublesToRender = collectBaubles(mc.player, Config.SHOW_EMPTY_SLOTS.get());
+			baublesToRender = cachedBaubles(mc.player, Config.SHOW_EMPTY_SLOTS.get());
 		lastRendered = baublesToRender;
 
 		// Default to 7 slots for preview mode
