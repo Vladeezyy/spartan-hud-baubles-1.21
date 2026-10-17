@@ -57,7 +57,7 @@ Baubles HUD with more options.
 ## Installation
 
 1. Install **NeoForge 21.1.197** or newer for Minecraft **1.21.1** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** or newer.
-2. Put `SpartanHUDBaubles-neoforge-1.0.0.1+1.21.1.jar` from the [releases](../../releases) into the `mods` folder of
+2. Put `SpartanHUDBaubles-neoforge-1.0.0.2+1.21.1.jar` from the [releases](../../releases) into the `mods` folder of
    your **client**.
 
 The mod is **client-side only**: servers do not need it (they need Curios for the Curios themselves). It does nothing
@@ -193,7 +193,7 @@ from its official pages.
 ## Установка
 
 1. Установите **NeoForge 21.1.197** или новее для Minecraft **1.21.1** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** или новее.
-2. Положите `SpartanHUDBaubles-neoforge-1.0.0.1+1.21.1.jar` из [релизов](../../releases) в папку `mods` **клиента**.
+2. Положите `SpartanHUDBaubles-neoforge-1.0.0.2+1.21.1.jar` из [релизов](../../releases) в папку `mods` **клиента**.
 
 Мод **только клиентский**: серверу он не нужен (серверу нужен Curios для самих предметов). Если сборка кладёт его на
 сервер, он там ничего не делает.
