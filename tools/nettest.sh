@@ -16,14 +16,14 @@ mkdir -p "$pack"
 echo '{"pack":{"pack_format":48,"description":"Spartan HUD: Baubles test slots"}}' > "$pack/pack.mcmeta"
 slots="curio head necklace back body bracelet hands ring belt charm"
 if [ "$LOADER" = fabric ]; then
-	# Trinkets: the ten slots in the chest group, in this order; ring and curio with two slots
+	# Trinkets: the ten slots in the chest group (test_<name>, apart from Trinkets' own), in this order; ring and curio with two
 	mkdir -p "$pack/data/trinkets/slots/chest" "$pack/data/trinkets/entities"
 	order=0; list=""
 	for s in $slots; do
 		order=$((order+1)); amount=1
 		case $s in ring|curio) amount=2 ;; esac
-		echo "{\"order\":$order,\"amount\":$amount,\"icon\":\"trinkets:gui/slots/ring\",\"validator_predicates\":[\"trinkets:all\"]}" > "$pack/data/trinkets/slots/chest/$s.json"
-		list="$list${list:+,}\"chest/$s\""
+		echo "{\"order\":$order,\"amount\":$amount,\"icon\":\"trinkets:gui/slots/ring\",\"validator_predicates\":[\"trinkets:all\"]}" > "$pack/data/trinkets/slots/chest/test_$s.json"
+		list="$list${list:+,}\"chest/test_$s\""
 	done
 	echo "{\"entities\":[\"minecraft:player\"],\"slots\":[$list]}" > "$pack/data/trinkets/entities/shb_test.json"
 else

@@ -101,3 +101,22 @@ on 1.21 any mod that adds Curios slots or items is supported.
   sort). The list is now collected once per game tick and drawn from that between ticks: the slots only change with
   the game ticks. 74 Curios: 94.5-96.7 % of the frame rate without the element (84-96 % before), stress scene 14/14.
 
+
+## Multiloader: NeoForge (Curios) + Fabric (Trinkets) 1.21.1 (2026-10-22, branch `multiloader`)
+
+- Layout as in the Spartan Weaponry port: `common/`, `neoforge/`, `fabric/`. The accessory mod is behind
+  `platform/Platform` (collecting the slots, the mod icon, the dummy slot icon, the render event): Curios on NeoForge,
+  Trinkets 3.10.0 on Fabric. A slot identifier is the accessory mod's: a Curios slot type (`ring`) or a Trinkets slot
+  (`hand/ring`). Empty slot icons: `client/gui/SlotIcon` (a block atlas sprite for Curios, a texture for Trinkets).
+- Fabric: the HUD is drawn by a mixin at the end of `Gui.renderExperienceLevel` (NeoForge: the layer above
+  `VanillaGuiLayers.EXPERIENCE_LEVEL`; Fabric API 1.21.1 has no GUI layers); the config and its screen with the
+  Preview HUD button come from Forge Config API Port (its port of NeoForge's `ConfigurationScreen`; Mod Menu opens
+  it); `RenderBaubleOnHUDCallback.PRE` / `POST` is the Fabric event for other mods (NeoForge: `RenderBaubleOnHUDEvent`).
+- The common code names NeoForge's `TranslatableEnum`; Forge Config API Port's API jar for common code is
+  intermediary-mapped, so the common project compiles against a stub in `common/src/stubs` (in no jar).
+- Test scenes: the accessory mod of a scene is `port/SceneAccessories` (Curios / Trinkets). On Fabric the test slots
+  are `chest/test_<name>` (Trinkets' own chest/back and chest/necklace would set their order). Trinkets 3.10.0's
+  `/trinkets set ... <count>` fails (the count is read as "amount"), so the Fabric dev server of the multiplayer check
+  has its own `/shbtest set` (port/FabricNetServerHooks, loaded only with `spartanhudbaubles.scene=netserver`).
+- Tests, NeoForge / Fabric: client scene 84/84 / 84/84, stress 13/13 / 13/13 (frame rate with 74 accessories
+  298 / 297 FPS, without the HUD element 303 / 306), multiplayer 6/6 / 6/6.
