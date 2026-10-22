@@ -24,6 +24,19 @@ dependencies {
     modImplementation "dev.emi:trinkets:${trinkets_version}"
     // Mod Menu (opens the config screen) in the dev runs only
     modLocalRuntime "maven.modrinth:modmenu:11.0.3"
+    // Popular client / performance mods for compatibility runs (-Pwith_compat)
+    if (project.hasProperty('with_compat')) {
+        modLocalRuntime "maven.modrinth:sodium:${compat_fabric_sodium}"
+        modLocalRuntime "maven.modrinth:iris:${compat_fabric_iris}"
+        // Iris' own libraries: Loom does not load the jars inside dev mods (Iris 1.8.8 for Fabric)
+        modLocalRuntime 'org.anarres:jcpp:1.4.14'
+        modLocalRuntime 'io.github.douira:glsl-transformer:2.0.1'
+        modLocalRuntime "maven.modrinth:lithium:${compat_fabric_lithium}"
+        modLocalRuntime "maven.modrinth:ferrite-core:${compat_fabric_ferritecore}"
+        modLocalRuntime "maven.modrinth:modernfix:${compat_fabric_modernfix}"
+        modLocalRuntime "maven.modrinth:jade:${compat_fabric_jade}"
+        modLocalRuntime "maven.modrinth:emi:${compat_fabric_emi}"
+    }
 }
 
 loom {
@@ -64,3 +77,36 @@ loom {
 tasks.named('jar', Jar).configure {
     exclude 'com/oblivioussp/spartanhudbaubles/port/**'
 }
+
+// Production runs (tools/prodtest.sh): Minecraft with intermediary names, as players have it. The release jar on a
+// real Fabric server (the mod does nothing there); the scenes on a production client from a jar that is the release
+// jar plus port/ (so the mixin and the code are checked against the intermediary names)
+configurations {
+    productionMods { transitive = false }
+}
+dependencies {
+    productionMods "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    productionMods "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forgeconfigapiport_version}"
+    productionMods "dev.emi:trinkets:${trinkets_version}"
+}
+var scenesJar = tasks.register('scenesJar', Jar) {
+    from sourceSets.main.output
+    archiveClassifier = 'scenes-dev'
+    destinationDirectory = layout.buildDirectory.dir('devlibs')
+}
+var remapScenesJar = tasks.register('remapScenesJar', net.fabricmc.loom.task.RemapJarTask) {
+    inputFile = scenesJar.flatMap { it.archiveFile }
+    archiveClassifier = 'scenes'
+}
+['Scene': 'dev', 'Stress': 'stress'].each { name, mode ->
+    tasks.register("prod${name}", net.fabricmc.loom.task.prod.ClientProductionRunTask) {
+        mods.from(remapScenesJar, configurations.productionMods)
+        jvmArgs.add("-Dspartanhudbaubles.scene=${mode}")
+        runDir = file('run-prod')
+    }
+}
+tasks.register('prodServer', net.fabricmc.loom.task.prod.ServerProductionRunTask) {
+    mods.from(tasks.named('remapJar'), configurations.productionMods)
+    runDir = file('run-prod-server')
+}
+
