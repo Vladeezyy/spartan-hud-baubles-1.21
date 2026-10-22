@@ -3,7 +3,7 @@
   "id": "${mod_id}",
   "version": "${version}",
   "name": "${mod_name}",
-  "description": "${mod_description}\nUnofficial port of Spartan HUD: Baubles 1.0.0 (ObliviousSpartan, LGPL-3.0) to Minecraft ${minecraft_version} / Fabric and Trinkets.",
+  "description": "${mod_description}\\nUnofficial port of Spartan HUD: Baubles 1.0.0 (ObliviousSpartan, LGPL-3.0) to Minecraft ${minecraft_version} / Fabric and Trinkets.",
   "authors": ["${mod_authors}"],
   "contributors": ["Shivaxi (ideas)", "Vladeezyy (port)"],
   "contact": {

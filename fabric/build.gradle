@@ -100,7 +100,8 @@ var remapScenesJar = tasks.register('remapScenesJar', net.fabricmc.loom.task.Rem
 }
 ['Scene': 'dev', 'Stress': 'stress'].each { name, mode ->
     tasks.register("prod${name}", net.fabricmc.loom.task.prod.ClientProductionRunTask) {
-        mods.from(remapScenesJar, configurations.productionMods)
+        // setFrom: Loom adds remapJar by default, and of two jars with one mod id Fabric loads either
+        mods.setFrom(remapScenesJar, configurations.productionMods)
         jvmArgs.add("-Dspartanhudbaubles.scene=${mode}")
         runDir = file('run-prod')
     }

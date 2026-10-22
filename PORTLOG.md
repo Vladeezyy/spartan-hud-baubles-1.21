@@ -120,3 +120,18 @@ on 1.21 any mod that adds Curios slots or items is supported.
   has its own `/shbtest set` (port/FabricNetServerHooks, loaded only with `spartanhudbaubles.scene=netserver`).
 - Tests, NeoForge / Fabric: client scene 84/84 / 84/84, stress 13/13 / 13/13 (frame rate with 74 accessories
   298 / 297 FPS, without the HUD element 303 / 306), multiplayer 6/6 / 6/6.
+
+## NeoForge and Fabric release check (2026-10-22, 1.0.0.3)
+
+- Release jar on real NeoForge servers 21.1.197 and 21.1.259, with Curios 9.5.1 and alone, and on a dedicated Fabric
+  server with Trinkets 3.10.0: starts clean. The client scene on a Fabric production client (intermediary names): 84/84.
+- The first production client run crashed with "The test scenes are not in this build" (`ClassNotFoundException` of
+  `port/FabricSceneHooks`, though it is in the scenes jar). Loom's `ClientProductionRunTask` adds the project's
+  `remapJar` to `mods` by itself, so the release jar and the scenes jar, both `spartanhudbaubles`, were in one run and
+  Fabric picked the release jar. The production client tasks of all four Spartan mods now use `mods.setFrom`.
+- `fabric.mod.json` in the jar was not valid JSON: the `\n` in the description became a raw newline when Gradle
+  expanded the template (Fabric Loader accepts it, strict parsers do not). Written as `\\n` now.
+- Compatibility on both loaders (Sodium 0.6.13, Iris 1.8 with Complementary Reimagined r5.9.3, Lithium, FerriteCore,
+  ModernFix, Jade; JEI on NeoForge, EMI on Fabric): client scene 84/84. Only the shader pack's and other mods' optional
+  mixin messages in the logs.
+- No stress scene and no FPS measurements in this run (owner's call).

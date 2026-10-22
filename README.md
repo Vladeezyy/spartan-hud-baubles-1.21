@@ -152,6 +152,11 @@ compatibility layer; not tested).
   extreme offsets, one slot per line, leaving and rejoining the world.
 - **Multiplayer** (`tools/nettest.sh`): a client on a dedicated server, Curios equipped with `/curios`: 6 checks.
 - **Release jar** on real NeoForge **21.1.197** and **21.1.259** servers, with and without Curios: starts, no errors.
+- **Fabric** (Loader 0.16.14, Fabric API 0.116.17, Forge Config API Port 21.1.6, Trinkets 3.10.0): the same client
+  scene (84 checks, Trinkets slots instead of Curios) in a dev run and on a production client with the release jar
+  plus the test classes; the release jar on a dedicated Fabric server.
+- **Compatibility** on both loaders: Sodium 0.6.13, Iris 1.8 with Complementary shaders, Lithium, FerriteCore,
+  ModernFix, Jade, EMI (JEI on NeoForge): the client scene, 84/84.
 - Details: [PORTLOG.md](PORTLOG.md).
 
 ## Source and credits
@@ -289,6 +294,11 @@ from its official pages.
   сдвиги, одна ячейка в ряду, выход и повторный вход в мир.
 - **Сетевая игра** (`tools/nettest.sh`): клиент на выделенном сервере, предметы надеваются командой `/curios`: 6 проверок.
 - **Release jar** на настоящих серверах NeoForge **21.1.197** и **21.1.259**, с Curios и без: запускается без ошибок.
+- **Fabric** (Loader 0.16.14, Fabric API 0.116.17, Forge Config API Port 21.1.6, Trinkets 3.10.0): та же клиентская
+  сцена (84 проверки, ячейки Trinkets вместо Curios) в dev-запуске и на production-клиенте с release jar и тестовыми
+  классами; release jar на выделенном сервере Fabric.
+- **Совместимость** на обоих загрузчиках: Sodium 0.6.13, Iris 1.8 с шейдерами Complementary, Lithium, FerriteCore,
+  ModernFix, Jade, EMI (на NeoForge — JEI): клиентская сцена 84/84.
 - Подробности: [PORTLOG.md](PORTLOG.md).
 
 ## Исходники и авторы
