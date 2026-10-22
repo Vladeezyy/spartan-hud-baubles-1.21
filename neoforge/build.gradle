@@ -6,11 +6,6 @@ plugins {
 neoForge {
     version = neo_version
 
-    parchment {
-        minecraftVersion = parchment_minecraft
-        mappingsVersion = parchment_version
-    }
-
     runs {
         client {
             client()
@@ -30,6 +25,7 @@ neoForge {
             server()
             programArgument '--nogui'
             gameDirectory = project.file('run-net')
+            systemProperty 'spartanhudbaubles.scene', 'netserver'
         }
         netClient {
             client()
@@ -67,9 +63,7 @@ dependencies {
         localRuntime "maven.modrinth:iris:${compat_iris}"
         localRuntime "maven.modrinth:lithium:${compat_lithium}"
         localRuntime "maven.modrinth:ferrite-core:${compat_ferritecore}"
-        localRuntime "maven.modrinth:modernfix:${compat_modernfix}"
         localRuntime "maven.modrinth:jade:${compat_jade}"
-        localRuntime "maven.modrinth:emi:${compat_emi}"
     }
 }
 

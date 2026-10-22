@@ -13,8 +13,9 @@ import com.oblivioussp.spartanhudbaubles.platform.Platform;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
@@ -28,8 +29,8 @@ public class NeoForgePlatform implements Platform
 {
 	// Port: the Curios inventory button replaces the Baubles icon, and the generic Curio slot icon the empty Bauble
 	// slot of the preview (both were drawn from Baubles' expanded_inventory.png)
-	private static final ResourceLocation CURIOS_ICON = ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "textures/gui/curios/button.png");
-	private static final SlotIcon DUMMY_SLOT_ICON = SlotIcon.sprite(ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "slot/empty_curio_slot"));
+	private static final Identifier CURIOS_ICON = Identifier.fromNamespaceAndPath(CuriosApi.MODID, "textures/gui/curios/button.png");
+	private static final SlotIcon DUMMY_SLOT_ICON = SlotIcon.sprite(Identifier.fromNamespaceAndPath(CuriosApi.MODID, "slot/empty_curio_slot"));
 
 	@Override
 	public String name()
@@ -76,7 +77,7 @@ public class NeoForgePlatform implements Platform
 	@Override
 	public void drawModIcon(GuiGraphics graphics, int x, int y)
 	{
-		graphics.blit(CURIOS_ICON, x, y, 0, 0, 10, 10, 10, 10);
+		graphics.blit(RenderPipelines.GUI_TEXTURED, CURIOS_ICON, x, y, 0, 0, 10, 10, 10, 10);
 	}
 
 	@Override

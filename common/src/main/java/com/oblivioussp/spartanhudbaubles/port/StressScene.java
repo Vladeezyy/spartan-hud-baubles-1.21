@@ -1,5 +1,7 @@
 package com.oblivioussp.spartanhudbaubles.port;
 
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.network.chat.Component;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +28,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
@@ -99,12 +101,12 @@ public final class StressScene
 		}
 		at(t += 5, mc -> {
 			mc.options.guiScale().set(0);
-			GLFW.glfwSetWindowSize(mc.getWindow().getWindow(), 854, 480);
+			GLFW.glfwSetWindowSize(mc.getWindow().handle(), 854, 480);
 		});
 		t = alignments(t + 10, "small window 854x480, auto GUI scale");
 		at(t += 5, mc -> DevScene.shot(mc, "stress_small"));
 		at(t += 5, mc -> {
-			GLFW.glfwSetWindowSize(mc.getWindow().getWindow(), 1600, 900);
+			GLFW.glfwSetWindowSize(mc.getWindow().handle(), 1600, 900);
 			mc.options.guiScale().set(3);
 			mc.resizeDisplay();
 			Config.ALIGNMENT.set(Alignment.BOTTOM_RIGHT);
@@ -150,8 +152,8 @@ public final class StressScene
 			equippedBeforeLeaving = HudElementBaubles.getActive().getLastRendered().size();
 			phase = 1;
 			tick = 0;
-			mc.level.disconnect();
-			mc.disconnect(new TitleScreen());
+			mc.level.disconnect(Component.empty());
+			mc.disconnect(new TitleScreen(), false);
 		});
 	}
 
@@ -193,12 +195,12 @@ public final class StressScene
 
 	private static void setup(ServerPlayer player)
 	{
-		var server = player.getServer();
-		server.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, server);
-		server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
-		player.serverLevel().setDayTime(6000);
+		var server = player.level().getServer();
+		server.overworld().getGameRules().set(GameRules.SPAWN_MOBS, false, server);
+		server.overworld().getGameRules().set(GameRules.ADVANCE_TIME, false, server);
+		player.level().setDayTime(6000);
 		player.setInvulnerable(true);
-		player.teleportTo(player.serverLevel(), player.getX(), player.getY(), player.getZ(), 0.0F, -60.0F);
+		player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), java.util.Set.of(), 0.0F, -60.0F, true);
 	}
 
 	/** Fills every accessory slot with a chance of {@code share} with different items */
@@ -271,7 +273,7 @@ public final class StressScene
 			opening = true;
 			if(phase == 0)
 			{
-				GLFW.glfwSetWindowSize(mc.getWindow().getWindow(), 1600, 900);
+				GLFW.glfwSetWindowSize(mc.getWindow().handle(), 1600, 900);
 				mc.options.guiScale().set(3);
 				mc.options.cloudStatus().set(CloudStatus.OFF);
 				mc.options.enableVsync().set(false);
@@ -289,7 +291,7 @@ public final class StressScene
 				}
 				WorldDataConfiguration packs = new WorldDataConfiguration(new net.minecraft.world.level.DataPackConfig(List.of("vanilla", "mod_data", "file/shb_slots"), List.of()),
 						net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS);
-				LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(), packs);
+				LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(FeatureFlags.DEFAULT_FLAGS), packs);
 				mc.createWorldOpenFlows().createFreshLevel(WORLD, settings, new WorldOptions(20261013L, false, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
 			}
 			else
@@ -300,7 +302,7 @@ public final class StressScene
 			return;
 		opening = false;
 		mc.options.pauseOnLostFocus = false;
-		mc.getToasts().clear();
+		mc.getToastManager().clear();
 		mc.getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
 		if(mc.screen instanceof PauseScreen)
 			mc.setScreen(null);
@@ -308,7 +310,7 @@ public final class StressScene
 		if(phase == 1)
 		{
 			if(tick == 30)
-				DevScene.server(mc, p -> Log.info("[scene] rejoined: server has " + countEquipped(p) + " Curios, " + p.serverLevel().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, p.getBoundingBox().inflate(10)).size() + " items on the ground, " + p.getInventory().items.stream().filter(st -> !st.isEmpty()).count() + " stacks in the inventory"));
+				DevScene.server(mc, p -> Log.info("[scene] rejoined: server has " + countEquipped(p) + " Curios, " + p.level().getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, p.getBoundingBox().inflate(10)).size() + " items on the ground, " + p.getInventory().getNonEquipmentItems().stream().filter(st -> !st.isEmpty()).count() + " stacks in the inventory"));
 			if(tick == 40)
 			{
 				int shown = HudElementBaubles.getActive().getLastRendered().size();

@@ -135,3 +135,43 @@ on 1.21 any mod that adds Curios slots or items is supported.
   ModernFix, Jade; JEI on NeoForge, EMI on Fabric): client scene 84/84. Only the shader pack's and other mods' optional
   mixin messages in the logs.
 - No stress scene and no FPS measurements in this run (owner's call).
+
+## 1.21.11 (branch mc/1.21.11, 2026-10-22, 1.0.0.3+1.21.11)
+
+NeoForge 21.11.48, Curios 14.0.0+1.21.11, JEI 27.48. NeoForge only: Trinkets has no 1.21.11 version, so the Fabric
+module is not in this branch. No Parchment for 1.21.11 (plain Mojang names).
+
+- `ResourceLocation` → `Identifier`.
+- GUI drawing on render pipelines:
+  - `blit(RenderPipelines.GUI_TEXTURED, texture, x, y, u, v, w, h, texW, texH)`;
+  - `blitSprite(RenderPipelines.GUI_TEXTURED, …)`, the preview's crosshair with `RenderPipelines.CROSSHAIR`;
+  - `RenderSystem.enableBlend` / `blendFuncSeparate` are gone.
+  - The old 9-argument `blit(texture, x, y, u, v, w, h, texW, texH)` still compiles: it is now
+    `blit(texture, x0, x1, y0, y1, u0, u1, v0, v1)` with float UVs, and drew nothing (the Curios button next to the
+    element, caught by the scene's frame comparison).
+- **Curios 14 keeps the slot icons on the GUI atlas** (before: the block atlas). `SlotIcon` draws them with
+  `blitSprite` and checks them on `AtlasIds.GUI`. With the block atlas every empty slot showed the missing texture
+  ("every empty slot has its slot icon (10 missing)").
+- **Curios 14's `/curios replace` only knows the slot types present when the server started**
+  (`CurioArgumentType.slotIds`, filled on `ServerAboutToStartEvent`). The slots of the world's data pack gave "Unknown
+  curio slot type ring". The multiplayer check equips through its own dev command (`port/NeoForgeNetServerHooks`, a
+  `@Mod(dist = DEDICATED_SERVER)` class in the test sources) with the Curios API.
+- Test scenes:
+  - `KeyEvent` / `MouseButtonEvent`;
+  - `GameRules` in `level.gamerules` (`ADVANCE_TIME`, `ADVANCE_WEATHER`, `SPAWN_MOBS`);
+  - `getRespawnData().pos()`;
+  - asynchronous `Screenshot.takeScreenshot(target, image -> …)`;
+  - `Window.handle()`, `getToastManager()`;
+  - `Items.IRON_CHAIN`.
+- Compatibility runs: NeoForge 21.11 wraps the GPU device in its validation layer in dev runs
+  (`enableB3DValidationLayer` in `neoforge-client.toml`). Sodium 0.8 and Iris 1.10 cast it to `GlDevice` and crash
+  (`ValidationGpuDevice cannot be cast to GlDevice`). `tools/compattest.sh` turns the layer off for the run and on
+  again after it.
+- The frame comparison of the scene allows one changed pixel where nothing should be drawn: under shaders the world
+  moves between the baseline frame and the checked one (a 2 × 2 corner had 1 pixel changed).
+- Checks:
+  - client scene 84/84, stress 13/13, multiplayer 6/6;
+  - release jar on a real NeoForge 21.11.48 server with Curios and alone: starts clean;
+  - compatibility (Sodium 0.8.14, Iris 1.10.8 with Complementary Reimagined r5.9.3, Lithium 0.21.4, FerriteCore 8.2.0,
+    Jade 21.1.7, JEI 27.48): client scene 84/84 with the shader pack on;
+  - no FPS measurements (owner's call).

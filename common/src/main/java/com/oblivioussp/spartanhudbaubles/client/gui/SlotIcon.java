@@ -2,22 +2,23 @@ package com.oblivioussp.spartanhudbaubles.client.gui;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.data.AtlasIds;
+import net.minecraft.resources.Identifier;
 
 /**
- * The icon of an empty accessory slot: a sprite of the block atlas (Curios slot icons) or a 16 x 16 texture of its own
+ * The icon of an empty accessory slot: a sprite of the GUI atlas (Curios slot icons; Curios 14 put them there, before they were on the block atlas) or a 16 x 16 texture of its own
  * (Trinkets slot icons, {@code textures/gui/slots/*.png}).
  */
-public record SlotIcon(ResourceLocation location, boolean atlasSprite)
+public record SlotIcon(Identifier location, boolean atlasSprite)
 {
-	public static SlotIcon sprite(ResourceLocation sprite)
+	public static SlotIcon sprite(Identifier sprite)
 	{
 		return new SlotIcon(sprite, true);
 	}
 
-	public static SlotIcon texture(ResourceLocation texture)
+	public static SlotIcon texture(Identifier texture)
 	{
 		return new SlotIcon(texture, false);
 	}
@@ -25,16 +26,16 @@ public record SlotIcon(ResourceLocation location, boolean atlasSprite)
 	public void draw(GuiGraphics graphics, int x, int y)
 	{
 		if(atlasSprite)
-			graphics.blit(x, y, 0, 16, 16, Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(location));
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, location, x, y, 16, 16);
 		else
-			graphics.blit(location, x, y, 0, 0, 16, 16, 16, 16);
+			graphics.blit(RenderPipelines.GUI_TEXTURED, location, x, y, 0, 0, 16, 16, 16, 16);
 	}
 
 	/** Whether the icon is missing (the missing texture would be drawn) */
 	public boolean isMissing(Minecraft mc)
 	{
 		if(atlasSprite)
-			return mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(location).contents().name().equals(MissingTextureAtlasSprite.getLocation());
+			return mc.getAtlasManager().getAtlasOrThrow(AtlasIds.GUI).getSprite(location).contents().name().equals(MissingTextureAtlasSprite.getLocation());
 		return mc.getResourceManager().getResource(location).isEmpty();
 	}
 }

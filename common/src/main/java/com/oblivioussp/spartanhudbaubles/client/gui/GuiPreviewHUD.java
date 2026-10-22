@@ -1,14 +1,13 @@
 package com.oblivioussp.spartanhudbaubles.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.HumanoidArm;
 
 /**
@@ -18,16 +17,16 @@ import net.minecraft.world.entity.HumanoidArm;
  */
 public class GuiPreviewHUD extends Screen
 {
-	private static final ResourceLocation HOTBAR_SPRITE = ResourceLocation.withDefaultNamespace("hud/hotbar");
-	private static final ResourceLocation HOTBAR_OFFHAND_LEFT_SPRITE = ResourceLocation.withDefaultNamespace("hud/hotbar_offhand_left");
-	private static final ResourceLocation HOTBAR_OFFHAND_RIGHT_SPRITE = ResourceLocation.withDefaultNamespace("hud/hotbar_offhand_right");
-	private static final ResourceLocation CROSSHAIR_SPRITE = ResourceLocation.withDefaultNamespace("hud/crosshair");
-	private static final ResourceLocation EXPERIENCE_BAR_BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("hud/experience_bar_background");
-	private static final ResourceLocation ARMOR_FULL_SPRITE = ResourceLocation.withDefaultNamespace("hud/armor_full");
-	private static final ResourceLocation HEART_CONTAINER_SPRITE = ResourceLocation.withDefaultNamespace("hud/heart/container");
-	private static final ResourceLocation HEART_FULL_SPRITE = ResourceLocation.withDefaultNamespace("hud/heart/full");
-	private static final ResourceLocation FOOD_EMPTY_SPRITE = ResourceLocation.withDefaultNamespace("hud/food_empty");
-	private static final ResourceLocation FOOD_FULL_SPRITE = ResourceLocation.withDefaultNamespace("hud/food_full");
+	private static final Identifier HOTBAR_SPRITE = Identifier.withDefaultNamespace("hud/hotbar");
+	private static final Identifier HOTBAR_OFFHAND_LEFT_SPRITE = Identifier.withDefaultNamespace("hud/hotbar_offhand_left");
+	private static final Identifier HOTBAR_OFFHAND_RIGHT_SPRITE = Identifier.withDefaultNamespace("hud/hotbar_offhand_right");
+	private static final Identifier CROSSHAIR_SPRITE = Identifier.withDefaultNamespace("hud/crosshair");
+	private static final Identifier EXPERIENCE_BAR_BACKGROUND_SPRITE = Identifier.withDefaultNamespace("hud/experience_bar_background");
+	private static final Identifier ARMOR_FULL_SPRITE = Identifier.withDefaultNamespace("hud/armor_full");
+	private static final Identifier HEART_CONTAINER_SPRITE = Identifier.withDefaultNamespace("hud/heart/container");
+	private static final Identifier HEART_FULL_SPRITE = Identifier.withDefaultNamespace("hud/heart/full");
+	private static final Identifier FOOD_EMPTY_SPRITE = Identifier.withDefaultNamespace("hud/food_empty");
+	private static final Identifier FOOD_FULL_SPRITE = Identifier.withDefaultNamespace("hud/food_full");
 
 	private final Screen parentScreen;
 	private HudElementBaubles hud;
@@ -47,7 +46,7 @@ public class GuiPreviewHUD extends Screen
 	 * leftover, so the preview now closes with a click anywhere (or Escape) and says so at the top
 	 */
 	@Override
-	public boolean mouseClicked(double mouseX, double mouseY, int button)
+	public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick)
 	{
 		onClose();
 		return true;
@@ -79,48 +78,45 @@ public class GuiPreviewHUD extends Screen
 		HumanoidArm offhandSide = minecraft.options.mainHand().get().getOpposite();
 
 		// Draw the mock default Hud (note that any Hud changing mods will not change this...)
-		RenderSystem.enableBlend();
 
 		if(minecraft.level == null)
 		{
 			// Draw the Hotbar
 			int halfWidth = width / 2;
 			int halfHeight = height / 2;
-			graphics.blitSprite(HOTBAR_SPRITE, halfWidth - 91, height - 22, 182, 22);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_SPRITE, halfWidth - 91, height - 22, 182, 22);
 			if(offhandSide == HumanoidArm.LEFT)
-				graphics.blitSprite(HOTBAR_OFFHAND_LEFT_SPRITE, halfWidth - 91 - 29, height - 23, 29, 24);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_OFFHAND_LEFT_SPRITE, halfWidth - 91 - 29, height - 23, 29, 24);
 			else
-				graphics.blitSprite(HOTBAR_OFFHAND_RIGHT_SPRITE, halfWidth + 91, height - 23, 29, 24);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HOTBAR_OFFHAND_RIGHT_SPRITE, halfWidth + 91, height - 23, 29, 24);
 
 			// Draw the crosshair
-			RenderSystem.blendFuncSeparate(SourceFactor.ONE_MINUS_DST_COLOR, DestFactor.ONE_MINUS_SRC_COLOR, SourceFactor.ONE, DestFactor.ZERO);
-			graphics.blitSprite(CROSSHAIR_SPRITE, (width - 15) / 2, (height - 15) / 2, 15, 15);
-			RenderSystem.defaultBlendFunc();
+			graphics.blitSprite(RenderPipelines.CROSSHAIR, CROSSHAIR_SPRITE, (width - 15) / 2, (height - 15) / 2, 15, 15);
 
 			// Draw the XP bar
-			graphics.blitSprite(EXPERIENCE_BAR_BACKGROUND_SPRITE, halfWidth - 91, height - 32 + 3, 182, 5);
+			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, EXPERIENCE_BAR_BACKGROUND_SPRITE, halfWidth - 91, height - 32 + 3, 182, 5);
 
 			// Draw Armor
 			int armorHeight = height - 49;
 			for(int i = 0; i < 10; i++)
 			{
-				graphics.blitSprite(ARMOR_FULL_SPRITE, halfWidth - 91 + i * 8, armorHeight, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, ARMOR_FULL_SPRITE, halfWidth - 91 + i * 8, armorHeight, 9, 9);
 			}
 
 			// Draw Health
 			int healthHeight = height - 39;
 			for(int i = 0; i < 10; i++)
 			{
-				graphics.blitSprite(HEART_CONTAINER_SPRITE, halfWidth - 91 + i * 8, healthHeight, 9, 9);
-				graphics.blitSprite(HEART_FULL_SPRITE, halfWidth - 91 + i * 8, healthHeight, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_CONTAINER_SPRITE, halfWidth - 91 + i * 8, healthHeight, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, HEART_FULL_SPRITE, halfWidth - 91 + i * 8, healthHeight, 9, 9);
 			}
 
 			// Draw Hunger
 			int hungerHeight = height - 39;
 			for(int i = 0; i < 10; i++)
 			{
-				graphics.blitSprite(FOOD_EMPTY_SPRITE, halfWidth + 82 - i * 8, hungerHeight, 9, 9);
-				graphics.blitSprite(FOOD_FULL_SPRITE, halfWidth + 82 - i * 8, hungerHeight, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, FOOD_EMPTY_SPRITE, halfWidth + 82 - i * 8, hungerHeight, 9, 9);
+				graphics.blitSprite(RenderPipelines.GUI_TEXTURED, FOOD_FULL_SPRITE, halfWidth + 82 - i * 8, hungerHeight, 9, 9);
 			}
 
 			// Draw the hover text for recently equipped items
@@ -131,7 +127,6 @@ public class GuiPreviewHUD extends Screen
 			graphics.drawString(font, hoverText, hoverX, hoverY, 0xFFFFFFFF);
 		}
 
-		RenderSystem.disableBlend();
 		hud.render(graphics);
 	}
 

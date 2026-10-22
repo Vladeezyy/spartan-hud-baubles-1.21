@@ -1,5 +1,10 @@
 package com.oblivioussp.spartanhudbaubles.port;
 
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.network.chat.Component;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,14 +38,14 @@ import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.locale.Language;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
@@ -257,7 +262,7 @@ public final class DevScene
 				check("preview: 7 dummy slots, bottom right", preview.getHud().getWidth() == 130 && preview.getHud().getLastX() == mc.getWindow().getGuiScaledWidth() - 130, preview.getHud().getLastX());
 				check("preview: no lone button, title and hint at the top", preview.children().isEmpty() && preview.getTextY() == 8, preview.children().size() + ", text at " + preview.getTextY());
 			}
-			mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0);
+			mc.screen.keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
 		});
 		at(t += 5, mc -> {
 			check("Escape returns to the config GUI", isConfigScreen(mc.screen), mc.screen);
@@ -277,7 +282,7 @@ public final class DevScene
 		});
 		at(t += 3, mc -> {
 			// A click anywhere closes the preview
-			mc.screen.mouseClicked(100, 100, 0);
+			mc.screen.mouseClicked(new MouseButtonEvent(100, 100, new MouseButtonInfo(0, 0)), false);
 		});
 		at(t += 5, mc -> {
 			check("a click anywhere closes the preview", isConfigScreen(mc.screen), mc.screen);
@@ -297,8 +302,8 @@ public final class DevScene
 		at(t += 3, mc -> {
 			// Then the preview from the main menu (the mock HUD)
 			menuPhase = true;
-			mc.level.disconnect();
-			mc.disconnect(new TitleScreen());
+			mc.level.disconnect(Component.empty());
+			mc.disconnect(new TitleScreen(), false);
 		});
 	}
 
@@ -351,7 +356,7 @@ public final class DevScene
 				return;
 			}
 			opened = true;
-			GLFW.glfwSetWindowSize(mc.getWindow().getWindow(), 1600, 900);
+			GLFW.glfwSetWindowSize(mc.getWindow().handle(), 1600, 900);
 			mc.options.guiScale().set(3);
 			mc.options.cloudStatus().set(CloudStatus.OFF);
 			mc.options.pauseOnLostFocus = false;
@@ -368,7 +373,7 @@ public final class DevScene
 			}
 			WorldDataConfiguration packs = new WorldDataConfiguration(new net.minecraft.world.level.DataPackConfig(List.of("vanilla", "mod_data", "file/shb_slots"), List.of()),
 					net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS);
-			LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(), packs);
+			LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(FeatureFlags.DEFAULT_FLAGS), packs);
 			mc.createWorldOpenFlows().createFreshLevel(WORLD, settings, new WorldOptions(20261013L, false, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
 			return;
 		}
@@ -388,7 +393,7 @@ public final class DevScene
 			return;
 		mc.options.pauseOnLostFocus = false;
 		mc.getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
-		mc.getToasts().clear();
+		mc.getToastManager().clear();
 		if(mc.screen instanceof PauseScreen)
 			mc.setScreen(null);
 		tick++;
@@ -427,7 +432,7 @@ public final class DevScene
 					shot(mc, "preview_menu");
 				}
 				case 50 -> {
-					mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0);
+					mc.screen.keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
 					mc.screen.onClose();
 					watchScreens = 8;
 				}
@@ -516,23 +521,23 @@ public final class DevScene
 
 	static void shot(Minecraft mc, String name)
 	{
-		Screenshot.grab(mc.gameDirectory, "scene_" + name + ".png", mc.getMainRenderTarget(), c -> Log.info("[scene] " + c.getString()));
+		Screenshot.grab(mc.gameDirectory, "scene_" + name + ".png", mc.getMainRenderTarget(), 1, c -> Log.info("[scene] " + c.getString()));
 	}
 
 	// ------------------------------------------------------------------------------------------------------ world
 
 	private static void setup(ServerPlayer player)
 	{
-		MinecraftServer server = player.getServer();
-		server.getGameRules().getRule(GameRules.RULE_DOMOBSPAWNING).set(false, server);
-		server.getGameRules().getRule(GameRules.RULE_DAYLIGHT).set(false, server);
-		server.getGameRules().getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
-		player.serverLevel().setDayTime(6000);
-		player.serverLevel().setWeatherParameters(6000, 0, false, false);
+		MinecraftServer server = player.level().getServer();
+		server.overworld().getGameRules().set(GameRules.SPAWN_MOBS, false, server);
+		server.overworld().getGameRules().set(GameRules.ADVANCE_TIME, false, server);
+		server.overworld().getGameRules().set(GameRules.ADVANCE_WEATHER, false, server);
+		player.level().setDayTime(6000);
+		player.level().setWeatherParameters(6000, 0, false, false);
 		player.setInvulnerable(true);
-		BlockPos spawn = player.serverLevel().getSharedSpawnPos();
-		int y = player.serverLevel().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawn.getX(), spawn.getZ());
-		player.teleportTo(player.serverLevel(), spawn.getX() + 0.5, y, spawn.getZ() + 0.5, 30.0F, 5.0F);
+		BlockPos spawn = player.level().getRespawnData().pos();
+		int y = player.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawn.getX(), spawn.getZ());
+		player.teleportTo(player.level(), spawn.getX() + 0.5, y, spawn.getZ() + 0.5, java.util.Set.of(), 30.0F, 5.0F, true);
 	}
 
 	/** Gives players all ten slot types (two ring and two curio slots) and makes the scene's items valid in them */
@@ -554,7 +559,7 @@ public final class DevScene
 		items.put("necklace", List.of(new ItemStack(Items.HEART_OF_THE_SEA)));
 		items.put("back", List.of(elytra));
 		items.put("body", List.of(new ItemStack(Items.ECHO_SHARD)));
-		items.put("bracelet", List.of(new ItemStack(Items.CHAIN)));
+		items.put("bracelet", List.of(new ItemStack(Items.IRON_CHAIN)));
 		items.put("hands", List.of(shears));
 		items.put("ring", List.of(new ItemStack(Items.GOLD_NUGGET), new ItemStack(Items.EMERALD)));
 		items.put("belt", List.of(new ItemStack(Items.LEAD)));
@@ -614,7 +619,7 @@ public final class DevScene
 
 	static void checkSlots(Minecraft mc)
 	{
-		server(mc, p -> Log.info("[scene] server: packs " + p.getServer().getPackRepository().getSelectedIds() + ", " + accessories.describe(p)));
+		server(mc, p -> Log.info("[scene] server: packs " + p.level().getServer().getPackRepository().getSelectedIds() + ", " + accessories.describe(p)));
 		Map<String, Integer> sizes = new LinkedHashMap<>();
 		for(SceneAccessories.Slot slot : accessories.slots(mc.player))
 			sizes.put(slot.id(), slot.size());
@@ -669,11 +674,15 @@ public final class DevScene
 
 	private static void captureBaseline(Minecraft mc)
 	{
-		try(NativeImage image = Screenshot.takeScreenshot(mc.getMainRenderTarget()))
+		// The frame arrives once the GPU has copied it (before the next scene step)
+		Screenshot.takeScreenshot(mc.getMainRenderTarget(), image ->
 		{
-			baselineWidth = image.getWidth();
-			baseline = image.getPixelsRGBA();
-		}
+			try(image)
+			{
+				baselineWidth = image.getWidth();
+				baseline = image.getPixels();
+			}
+		});
 	}
 
 	/**
@@ -683,31 +692,36 @@ public final class DevScene
 	static void checkDrawn(Minecraft mc, String name, int gx, int gy, int gw, int gh, boolean drawn)
 	{
 		double scale = mc.getWindow().getGuiScale();
-		int changed = 0, total = 0;
-		try(NativeImage image = Screenshot.takeScreenshot(mc.getMainRenderTarget()))
+		Screenshot.takeScreenshot(mc.getMainRenderTarget(), image ->
 		{
-			if(baseline == null || image.getWidth() != baselineWidth)
+			int changed = 0, total = 0;
+			try(image)
 			{
-				check(name, false, "no baseline frame");
-				return;
-			}
-			int[] now = image.getPixelsRGBA();
-			for(int ix = gx; ix < gx + gw; ix++)
-				for(int iy = gy; iy < gy + gh; iy++)
+				if(baseline == null || image.getWidth() != baselineWidth)
 				{
-					boolean outline = ix == gx || iy == gy || ix == gx + gw - 1 || iy == gy + gh - 1;
-					if(!outline && gw > 4 && gh > 4)
-						continue;
-					int px = (int)((ix + 0.5) * scale), py = (int)((iy + 0.5) * scale);
-					if(px < 0 || py < 0 || px >= image.getWidth() || py >= image.getHeight())
-						continue;
-					total++;
-					if(differs(now[py * image.getWidth() + px], baseline[py * baselineWidth + px]))
-						changed++;
+					check(name, false, "no baseline frame");
+					return;
 				}
-		}
-		double share = total == 0 ? 0 : (double)changed / total;
-		check(name, drawn ? share >= 0.7 : share <= 0.1, changed + " of " + total + " outline pixels changed");
+				int[] now = image.getPixels();
+				for(int ix = gx; ix < gx + gw; ix++)
+					for(int iy = gy; iy < gy + gh; iy++)
+					{
+						boolean outline = ix == gx || iy == gy || ix == gx + gw - 1 || iy == gy + gh - 1;
+						if(!outline && gw > 4 && gh > 4)
+							continue;
+						int px = (int)((ix + 0.5) * scale), py = (int)((iy + 0.5) * scale);
+						if(px < 0 || py < 0 || px >= image.getWidth() || py >= image.getHeight())
+							continue;
+						total++;
+						if(differs(now[py * image.getWidth() + px], baseline[py * baselineWidth + px]))
+							changed++;
+					}
+			}
+			double share = total == 0 ? 0 : (double)changed / total;
+			// Not drawn: one changed pixel is allowed (shaders animate the world between the baseline and this frame; a frame
+			// or skin would change all of a small area)
+			check(name, drawn ? share >= 0.7 : share <= 0.1 || changed <= 1, changed + " of " + total + " outline pixels changed");
+		});
 	}
 
 	private static boolean differs(int a, int b)
@@ -766,9 +780,9 @@ public final class DevScene
 			return;
 		}
 		double x = widget.getX() + widget.getWidth() / 2.0, y = widget.getY() + widget.getHeight() / 2.0;
-		mc.screen.mouseClicked(x, y, 0);
+		mc.screen.mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)), false);
 		if(mc.screen != null)
-			mc.screen.mouseReleased(x, y, 0);
+			mc.screen.mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)));
 	}
 
 	private static String readConfigFile()
@@ -799,8 +813,8 @@ public final class DevScene
 		check("translations: " + keys.size() + " strings present in " + LANG, missing.isEmpty(), missing);
 	}
 
-	static ResourceLocation id(String path)
+	static Identifier id(String path)
 	{
-		return ResourceLocation.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, path);
+		return Identifier.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, path);
 	}
 }

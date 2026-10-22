@@ -2,19 +2,20 @@
 
 <img src="docs/images/logo.png" width="320" alt="Spartan HUD: Baubles logo">
 
-# Spartan HUD: Baubles — NeoForge & Fabric 1.21.1
+# Spartan HUD: Baubles — NeoForge 1.21.11
 
-**See your Curios and Trinkets!**
+**See your Curios!**
 
-[![Minecraft 1.21.1](https://img.shields.io/badge/Minecraft-1.21.1-3c8527)](https://www.minecraft.net)
-[![NeoForge 21.1](https://img.shields.io/badge/NeoForge-21.1.197%2B-e0682b)](https://neoforged.net)
-[![Fabric 0.16](https://img.shields.io/badge/Fabric-0.16.14%2B-dbd0b4)](https://fabricmc.net)
-[![Requires Curios or Trinkets](https://img.shields.io/badge/requires-Curios%20%2F%20Trinkets-8a2be2)](#installation)
+[![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-3c8527)](https://www.minecraft.net)
+[![NeoForge 21.11](https://img.shields.io/badge/NeoForge-21.11.48%2B-e0682b)](https://neoforged.net)
+[![Requires Curios](https://img.shields.io/badge/requires-Curios-8a2be2)](#installation)
 [![Client side](https://img.shields.io/badge/side-client%20only-informational)](#installation)
 [![License LGPL-3.0](https://img.shields.io/badge/license-LGPL--3.0-blue)](LICENSE)
 
 An unofficial port of **Spartan HUD: Baubles** 1.0.0 by **ObliviousSpartan** from Minecraft 1.12.2 (Baubles) to
-**NeoForge 1.21.1** with **Curios** and to **Fabric 1.21.1** with **Trinkets**, the 1.21 successors of Baubles.
+**NeoForge 1.21.11** with **Curios**, the 1.21 successor of Baubles. This is the 1.21.11 branch; the 1.21.1 version for
+NeoForge (Curios) and Fabric (Trinkets) is on [`main`](../../tree/main). Trinkets has no 1.21.11 version, so 1.21.11 is
+NeoForge only.
 
 </div>
 
@@ -29,7 +30,7 @@ An unofficial port of **Spartan HUD: Baubles** 1.0.0 by **ObliviousSpartan** fro
 
 ## About the mod
 
-A client-side HUD element that shows the Curios (on Fabric: the Trinkets) you have equipped, a made-from-scratch replacement for the old
+A client-side HUD element that shows the Curios you have equipped, a made-from-scratch replacement for the old
 Baubles HUD with more options.
 
 - **Nine alignments**: any corner, the middle of any edge or the centre of the screen (the centre column keeps clear of
@@ -57,25 +58,14 @@ Baubles HUD with more options.
 
 ## Installation
 
-**NeoForge**
-
-1. Install **NeoForge 21.1.197** or newer for Minecraft **1.21.1** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** or newer.
-2. Put `spartanhudbaubles-neoforge-1.0.0.3+1.21.1.jar` from the [releases](../../releases) into the `mods` folder of
+1. Install **NeoForge 21.11.48** or newer for Minecraft **1.21.11** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 14.0.0+1.21.11** or newer.
+2. Put `spartanhudbaubles-neoforge-1.0.0.3+1.21.11.jar` from the [releases](../../releases) into the `mods` folder of
    your **client**.
 
-**Fabric**
+The mod is **client-side only**: servers do not need it (they need Curios for the accessories themselves). It does
+nothing on a server if a modpack ships it there.
 
-1. Install **Fabric Loader 0.16.14** or newer for Minecraft **1.21.1**, **[Fabric API](https://modrinth.com/mod/fabric-api)**,
-   **[Trinkets](https://modrinth.com/mod/trinkets) 3.10.0** or newer and
-   **[Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) 21.1.6** or newer (the settings).
-2. Put `spartanhudbaubles-fabric-1.0.0.3+1.21.1.jar` from the [releases](../../releases) into the `mods` folder of
-   your **client**.
-
-The mod is **client-side only**: servers do not need it (they need Curios / Trinkets for the accessories themselves).
-It does nothing on a server if a modpack ships it there. On Fabric the slots are Trinkets' (`hand/ring`, ...), in the
-order of the Trinkets inventory, and the Trinkets ring icon stands next to the element.
-
-Settings: **Mods → Spartan HUD: Baubles → Config** (on Fabric through Mod Menu), or `config/spartanhudbaubles-client.toml`.
+Settings: **Mods → Spartan HUD: Baubles → Config**, or `config/spartanhudbaubles-client.toml`.
 
 | Option | Default | |
 | --- | --- | --- |
@@ -84,7 +74,7 @@ Settings: **Mods → Spartan HUD: Baubles → Config** (on Fabric through Mod Me
 | `alignment` | `BOTTOM_RIGHT` | `TOP_LEFT` … `BOTTOM_RIGHT` (9) |
 | `offset_x`, `offset_y` | `0` | −1000 … 1000 |
 | `rotate_vertical` | `false` | Vertical instead of horizontal |
-| `show_baubles_icon` | `true` | The Curios / Trinkets icon next to the element (not with skin `NONE`) |
+| `show_baubles_icon` | `true` | The Curios icon next to the element (not with skin `NONE`) |
 | `show_empty_slots` | `false` | **New**: empty slots with their icons |
 | `max_slots_per_line` | `0` | **New**: slots per row / column, `0` = as many as fit on the screen |
 | `tooltip_*_colour`, `minimal_*_colour` | as 1.0.0 | `red`, `green`, `blue`, `alpha` 0–255 |
@@ -136,8 +126,7 @@ Baubles icon. The Preview HUD has no lone **Done** button floating over the cros
 
 ## Compatibility
 
-Tested with Curios 9.5.1, JEI, and in a compatibility run with Sodium, Iris, Lithium, FerriteCore, ModernFix, Jade and
-EMI. Any mod adding Curios slots or items works. Accessories is not supported directly (it may work through its Curios
+Tested with Curios 14.0.0, JEI, and in a compatibility run with Sodium, Iris, Lithium, FerriteCore and Jade. Any mod adding Curios slots or items works. Accessories is not supported directly (it may work through its Curios
 compatibility layer; not tested).
 
 ## Testing
@@ -146,17 +135,14 @@ compatibility layer; not tested).
   Curios, wrapped rows, empty slots, every skin, all 9 alignments horizontal and vertical, offsets, F1, spectator, live
   durability, a Curio breaking in its slot, the config GUI and the preview through real clicks, the saved file, the main
   menu preview, translations. That the element is really drawn is checked by comparing the frame with one drawn
-  without it. Run on NeoForge 21.1.262 and 21.1.197.
-- **Stress** (`-Pscene=stress`): 14 checks — a broken config file at start, 74 Curios (frame rate 84–96 % of the one
-  without the element), 200 ticks of random changes, GUI scales 1–4 and an 854×480 window with every alignment,
+  without it. Run on NeoForge 21.11.48 with Curios 14.0.0.
+- **Stress** (`-Pscene=stress`): 13 checks — a broken config file at start, 74 Curios, 200 ticks of random changes,
+  GUI scales 1–4 and an 854×480 window with every alignment,
   extreme offsets, one slot per line, leaving and rejoining the world.
-- **Multiplayer** (`tools/nettest.sh`): a client on a dedicated server, Curios equipped with `/curios`: 6 checks.
-- **Release jar** on real NeoForge **21.1.197** and **21.1.259** servers, with and without Curios: starts, no errors.
-- **Fabric** (Loader 0.16.14, Fabric API 0.116.17, Forge Config API Port 21.1.6, Trinkets 3.10.0): the same client
-  scene (84 checks, Trinkets slots instead of Curios) in a dev run and on a production client with the release jar
-  plus the test classes; the release jar on a dedicated Fabric server.
-- **Compatibility** on both loaders: Sodium 0.6.13, Iris 1.8 with Complementary shaders, Lithium, FerriteCore,
-  ModernFix, Jade, EMI (JEI on NeoForge): the client scene, 84/84.
+- **Multiplayer** (`tools/nettest.sh`): a client on a dedicated server, Curios equipped on the server: 6 checks.
+- **Release jar** on a real NeoForge **21.11.48** server, with and without Curios: starts, no errors.
+- **Compatibility**: Sodium 0.8.14, Iris 1.10.8 with Complementary shaders, Lithium 0.21.4, FerriteCore 8.2.0,
+  Jade 21.1.7, JEI 27.48: the client scene, 84/84.
 - Details: [PORTLOG.md](PORTLOG.md).
 
 ## Source and credits
@@ -165,7 +151,7 @@ compatibility layer; not tested).
   [GitHub](https://github.com/ObliviousSpartan/SpartanHUD-Baubles),
   [CurseForge](https://www.curseforge.com/minecraft/mc-mods/spartan-hud-baubles). Credits of the original: Shivaxi for
   the ideas, the RLCraft modpack team for testing and feedback.
-- Port to NeoForge 1.21.1 (Curios) and Fabric 1.21.1 (Trinkets): **Vladeezyy**.
+- Port to NeoForge 1.21.1 / 1.21.11 (Curios) and Fabric 1.21.1 (Trinkets): **Vladeezyy**.
 
 ## License
 
@@ -183,7 +169,7 @@ from its official pages.
 
 ## О моде
 
-Клиентский элемент HUD, который показывает надетые предметы Curios (на Fabric — Trinkets). Написан с нуля как замена старого Baubles HUD,
+Клиентский элемент HUD, который показывает надетые предметы Curios. Написан с нуля как замена старого Baubles HUD,
 с дополнительными настройками.
 
 - **Девять положений**: любой угол, середина любого края или центр экрана (центральная колонка не залезает на прицел и
@@ -209,23 +195,16 @@ from its official pages.
 
 ## Установка
 
-**NeoForge**
+Это ветка 1.21.11; версия 1.21.1 для NeoForge (Curios) и Fabric (Trinkets) — в [`main`](../../tree/main). У Trinkets нет
+версии под 1.21.11, поэтому 1.21.11 — только NeoForge.
 
-1. Установите **NeoForge 21.1.197** или новее для Minecraft **1.21.1** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** или новее.
-2. Положите `spartanhudbaubles-neoforge-1.0.0.3+1.21.1.jar` из [релизов](../../releases) в папку `mods` **клиента**.
+1. Установите **NeoForge 21.11.48** или новее для Minecraft **1.21.11** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 14.0.0+1.21.11** или новее.
+2. Положите `spartanhudbaubles-neoforge-1.0.0.3+1.21.11.jar` из [релизов](../../releases) в папку `mods` **клиента**.
 
-**Fabric**
+Мод **только клиентский**: серверу он не нужен (серверу нужен Curios для самих предметов). Если сборка кладёт его на
+сервер, он там ничего не делает.
 
-1. Установите **Fabric Loader 0.16.14** или новее для Minecraft **1.21.1**, **[Fabric API](https://modrinth.com/mod/fabric-api)**,
-   **[Trinkets](https://modrinth.com/mod/trinkets) 3.10.0** или новее и
-   **[Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) 21.1.6** или новее (настройки).
-2. Положите `spartanhudbaubles-fabric-1.0.0.3+1.21.1.jar` из [релизов](../../releases) в папку `mods` **клиента**.
-
-Мод **только клиентский**: серверу он не нужен (серверу нужен Curios / Trinkets для самих предметов). Если сборка
-кладёт его на сервер, он там ничего не делает. На Fabric ячейки — ячейки Trinkets (`hand/ring`, …), в порядке
-инвентаря Trinkets, а рядом с элементом — значок кольца Trinkets.
-
-Настройки: **Моды → Spartan HUD: Baubles → Настроить** (на Fabric через Mod Menu) или `config/spartanhudbaubles-client.toml`. Параметры — в
+Настройки: **Моды → Spartan HUD: Baubles → Настроить** или `config/spartanhudbaubles-client.toml`. Параметры — в
 таблице английского раздела; новые: `show_empty_slots` (пустые ячейки) и `max_slots_per_line` (ячеек в ряду, `0` —
 сколько влезает на экран).
 
@@ -278,7 +257,7 @@ from its official pages.
 
 ## Совместимость
 
-Проверено с Curios 9.5.1, JEI и в прогоне совместимости с Sodium, Iris, Lithium, FerriteCore, ModernFix, Jade и EMI.
+Проверено с Curios 14.0.0, JEI и в прогоне совместимости с Sodium, Iris, Lithium, FerriteCore и Jade.
 Работает с любыми модами, добавляющими ячейки или предметы Curios. Accessories напрямую не поддерживается (может
 работать через его слой совместимости с Curios; не проверялось).
 
@@ -288,17 +267,14 @@ from its official pages.
   предметах, перенос рядов, пустые ячейки, все оформления, все 9 положений по горизонтали и вертикали, сдвиги, F1,
   наблюдатель, прочность на лету, поломка предмета в ячейке, окно настроек и предпросмотр настоящими кликами, сохранение
   файла, предпросмотр из главного меню, переводы. Что элемент действительно нарисован, проверяется сравнением кадра с
-  кадром без него. Прогнано на NeoForge 21.1.262 и 21.1.197.
-- **Стресс** (`-Pscene=stress`): 14 проверок — испорченный файл настроек при запуске, 74 предмета (FPS 84–96 % от
-  кадра без элемента), 200 тиков случайных изменений, масштабы GUI 1–4 и окно 854×480 со всеми положениями, крайние
+  кадром без него. Прогнано на NeoForge 21.11.48 с Curios 14.0.0.
+- **Стресс** (`-Pscene=stress`): 13 проверок — испорченный файл настроек при запуске, 74 предмета, 200 тиков случайных
+  изменений, масштабы GUI 1–4 и окно 854×480 со всеми положениями, крайние
   сдвиги, одна ячейка в ряду, выход и повторный вход в мир.
-- **Сетевая игра** (`tools/nettest.sh`): клиент на выделенном сервере, предметы надеваются командой `/curios`: 6 проверок.
-- **Release jar** на настоящих серверах NeoForge **21.1.197** и **21.1.259**, с Curios и без: запускается без ошибок.
-- **Fabric** (Loader 0.16.14, Fabric API 0.116.17, Forge Config API Port 21.1.6, Trinkets 3.10.0): та же клиентская
-  сцена (84 проверки, ячейки Trinkets вместо Curios) в dev-запуске и на production-клиенте с release jar и тестовыми
-  классами; release jar на выделенном сервере Fabric.
-- **Совместимость** на обоих загрузчиках: Sodium 0.6.13, Iris 1.8 с шейдерами Complementary, Lithium, FerriteCore,
-  ModernFix, Jade, EMI (на NeoForge — JEI): клиентская сцена 84/84.
+- **Сетевая игра** (`tools/nettest.sh`): клиент на выделенном сервере, предметы надеваются на сервере: 6 проверок.
+- **Release jar** на настоящем сервере NeoForge **21.11.48**, с Curios и без: запускается без ошибок.
+- **Совместимость**: Sodium 0.8.14, Iris 1.10.8 с шейдерами Complementary, Lithium 0.21.4, FerriteCore 8.2.0,
+  Jade 21.1.7, JEI 27.48: клиентская сцена 84/84.
 - Подробности: [PORTLOG.md](PORTLOG.md).
 
 ## Исходники и авторы
@@ -307,7 +283,7 @@ from its official pages.
   [GitHub](https://github.com/ObliviousSpartan/SpartanHUD-Baubles),
   [CurseForge](https://www.curseforge.com/minecraft/mc-mods/spartan-hud-baubles). Благодарности оригинала: Shivaxi за
   идеи, команде сборки RLCraft за тестирование.
-- Порт на NeoForge 1.21.1 (Curios) и Fabric 1.21.1 (Trinkets): **Vladeezyy**.
+- Порт на NeoForge 1.21.1 / 1.21.11 (Curios) и Fabric 1.21.1 (Trinkets): **Vladeezyy**.
 
 ## Лицензия
 

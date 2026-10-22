@@ -1,5 +1,6 @@
 package com.oblivioussp.spartanhudbaubles.port;
 
+import net.minecraft.network.chat.Component;
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
 import com.oblivioussp.spartanhudbaubles.client.gui.HudElementBaubles;
 import com.oblivioussp.spartanhudbaubles.util.Log;
@@ -34,7 +35,7 @@ public final class NetScene
 		if(mc.player == null || mc.getConnection() == null)
 			return;
 		mc.options.pauseOnLostFocus = false;
-		mc.getToasts().clear();
+		mc.getToastManager().clear();
 		tick++;
 		try
 		{
@@ -89,8 +90,8 @@ public final class NetScene
 			}
 			case 130 -> {
 				Log.info("[scene] DONE, failed checks: " + DevScene.failures);
-				mc.level.disconnect();
-				mc.disconnect(new TitleScreen());
+				mc.level.disconnect(Component.empty());
+				mc.disconnect(new TitleScreen(), false);
 				mc.stop();
 			}
 			default -> {}

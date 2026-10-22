@@ -2,7 +2,6 @@ package com.oblivioussp.spartanhudbaubles.client.gui;
 
 import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.Alignment;
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.HorizontalAlignment;
@@ -14,16 +13,17 @@ import com.oblivioussp.spartanhudbaubles.util.SkinType;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 public class HudElementBaubles extends HudElement
 {
-	public static final ResourceLocation LAYER = ResourceLocation.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, "baubles");
+	public static final Identifier LAYER = Identifier.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, "baubles");
 	private static HudElementBaubles ACTIVE = null;
 
-	private static final ResourceLocation HUD = ResourceLocation.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, "textures/gui/hud.png");
+	private static final Identifier HUD = Identifier.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, "textures/gui/hud.png");
 	// Port: the accessory mod's icon (Platform#drawModIcon) replaces the Baubles icon, and its generic slot icon the
 	// empty Bauble slot of the preview (both were drawn from Baubles' expanded_inventory.png)
 	private static final int DEFAULT_WIDTH = 130;
@@ -131,7 +131,6 @@ public class HudElementBaubles extends HudElement
 		lastX = x;
 		lastY = y;
 
-		RenderSystem.enableBlend();
 
 		// Draw the Baubles icon if enabled unless set to no skin type
 		if(Config.SHOW_BAUBLES_ICON.get() && skinType != SkinType.NONE)
@@ -195,8 +194,6 @@ public class HudElementBaubles extends HudElement
 			graphics.renderItemDecorations(mc.font, stack, offsetX, offsetY);
 			Platform.INSTANCE.onRenderBauble(true, stack, bauble.slotIdentifier(), bauble.slotIndex(), offsetX, offsetY, hudAlignment, rotateVertical, graphics, mc.font);
 		}
-
-		RenderSystem.disableBlend();
 	}
 
 	/**
@@ -215,7 +212,7 @@ public class HudElementBaubles extends HudElement
 			int drawY = y;
 			for(int[] v : vPieces)
 			{
-				graphics.blit(HUD, drawX, drawY, u[0], v[0], u[1], v[1]);
+				graphics.blit(RenderPipelines.GUI_TEXTURED, HUD, drawX, drawY, u[0], v[0], u[1], v[1], 256, 256);
 				drawY += v[1];
 			}
 			drawX += u[1];

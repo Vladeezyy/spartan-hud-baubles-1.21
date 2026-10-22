@@ -96,7 +96,8 @@ final class CuriosSceneAccessories implements SceneAccessories
 	@Override
 	public String setCommand(String name, int index, String item)
 	{
-		return "curios replace " + name + " " + index + " Dev with " + item;
+		// NeoForgeNetServerHooks: /curios replace does not know the slot types of the data pack (Curios 14)
+		return "shbtest set " + name + " " + index + " " + item;
 	}
 
 	@Override
