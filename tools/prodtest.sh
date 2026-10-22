@@ -37,7 +37,8 @@ grep -E 'Done \(|Crash report|crash report|BUILD FAILED' "$LOG" | head -3
 grep -E '/(ERROR|FATAL)\]|Caused by|Exception' "$LOG" | grep -vE 'server.properties|No data fixer registered' | cut -c1-250 | sort | uniq -c | sort -rn | head -10
 mkdir -p fabric/run-prod/config
 [ -f fabric/run-prod/options.txt ] || cp fabric/run/options.txt fabric/run-prod/ 2>/dev/null
-for t in Scene Stress; do
+# NO_STRESS=1: the client scene only
+for t in Scene $([ -n "$NO_STRESS" ] || echo Stress); do
 	rm -rf fabric/run-prod/saves/shb_scene fabric/run-prod/saves/shb_stress fabric/run-prod/screenshots
 	rm -f fabric/run-prod/config/$MOD-client.toml
 	# The stress scene starts with a broken config file (the original crashed on an unknown skin_type)
