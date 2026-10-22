@@ -707,7 +707,9 @@ public final class DevScene
 				}
 		}
 		double share = total == 0 ? 0 : (double)changed / total;
-		check(name, drawn ? share >= 0.7 : share <= 0.1, changed + " of " + total + " outline pixels changed");
+		// Not drawn: one changed pixel is allowed (shaders animate the world between the baseline and this frame; a frame
+		// or skin would change all of a small area)
+		check(name, drawn ? share >= 0.7 : share <= 0.1 || changed <= 1, changed + " of " + total + " outline pixels changed");
 	}
 
 	private static boolean differs(int a, int b)

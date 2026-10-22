@@ -147,7 +147,7 @@ compatibility layer; not tested).
   durability, a Curio breaking in its slot, the config GUI and the preview through real clicks, the saved file, the main
   menu preview, translations. That the element is really drawn is checked by comparing the frame with one drawn
   without it. Run on NeoForge 21.1.262 and 21.1.197.
-- **Stress** (`-Pscene=stress`): 14 checks — a broken config file at start, 74 Curios (frame rate 84–96 % of the one
+- **Stress** (`-Pscene=stress`): 13 checks — a broken config file at start, 74 Curios (frame rate 84–96 % of the one
   without the element), 200 ticks of random changes, GUI scales 1–4 and an 854×480 window with every alignment,
   extreme offsets, one slot per line, leaving and rejoining the world.
 - **Multiplayer** (`tools/nettest.sh`): a client on a dedicated server, Curios equipped with `/curios`: 6 checks.
@@ -289,7 +289,7 @@ from its official pages.
   наблюдатель, прочность на лету, поломка предмета в ячейке, окно настроек и предпросмотр настоящими кликами, сохранение
   файла, предпросмотр из главного меню, переводы. Что элемент действительно нарисован, проверяется сравнением кадра с
   кадром без него. Прогнано на NeoForge 21.1.262 и 21.1.197.
-- **Стресс** (`-Pscene=stress`): 14 проверок — испорченный файл настроек при запуске, 74 предмета (FPS 84–96 % от
+- **Стресс** (`-Pscene=stress`): 13 проверок — испорченный файл настроек при запуске, 74 предмета (FPS 84–96 % от
   кадра без элемента), 200 тиков случайных изменений, масштабы GUI 1–4 и окно 854×480 со всеми положениями, крайние
   сдвиги, одна ячейка в ряду, выход и повторный вход в мир.
 - **Сетевая игра** (`tools/nettest.sh`): клиент на выделенном сервере, предметы надеваются командой `/curios`: 6 проверок.

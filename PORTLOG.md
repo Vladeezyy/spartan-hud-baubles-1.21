@@ -135,3 +135,6 @@ on 1.21 any mod that adds Curios slots or items is supported.
   ModernFix, Jade; JEI on NeoForge, EMI on Fabric): client scene 84/84. Only the shader pack's and other mods' optional
   mixin messages in the logs.
 - No stress scene and no FPS measurements in this run (owner's call).
+- Later the same day: the compatibility runs had Iris without its shader pack (`shaderPack=` was empty in the copied
+  `iris.properties`). Repeated with Complementary Reimagined r5.9.3 on: 84/84 on both loaders. The frame comparison now
+  allows one changed pixel where nothing should be drawn (under shaders the world moves between the two frames).
