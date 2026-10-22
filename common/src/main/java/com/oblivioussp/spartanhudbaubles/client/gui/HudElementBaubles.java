@@ -1,33 +1,22 @@
 package com.oblivioussp.spartanhudbaubles.client.gui;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
-import com.oblivioussp.spartanhudbaubles.client.event.RenderBaubleOnHUDEvent;
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.Alignment;
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.HorizontalAlignment;
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.VerticalAlignment;
 import com.oblivioussp.spartanhudbaubles.util.Config;
+import com.oblivioussp.spartanhudbaubles.platform.Platform;
 import com.oblivioussp.spartanhudbaubles.util.SkinType;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.common.NeoForge;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.ISlotType;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
-import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 public class HudElementBaubles extends HudElement
 {
@@ -35,18 +24,17 @@ public class HudElementBaubles extends HudElement
 	private static HudElementBaubles ACTIVE = null;
 
 	private static final ResourceLocation HUD = ResourceLocation.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, "textures/gui/hud.png");
-	// Port: the Curios inventory button replaces the Baubles icon, and the generic Curio slot icon the empty Bauble
-	// slot of the preview (both were drawn from Baubles' expanded_inventory.png)
-	private static final ResourceLocation CURIOS_ICON = ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "textures/gui/curios/button.png");
-	private static final ResourceLocation DUMMY_SLOT_ICON = ResourceLocation.fromNamespaceAndPath(CuriosApi.MODID, "slot/empty_curio_slot");
+	// Port: the accessory mod's icon (Platform#drawModIcon) replaces the Baubles icon, and its generic slot icon the
+	// empty Bauble slot of the preview (both were drawn from Baubles' expanded_inventory.png)
 	private static final int DEFAULT_WIDTH = 130;
 	private static final int DEFAULT_HEIGHT = 22;
 	private static final int PREVIEW_SLOTS = 7;
 
 	/**
-	 * One slot shown in the HUD: an equipped Curio, or an empty slot with its icon
+	 * One slot shown in the HUD: an equipped accessory, or an empty slot with its icon. The slot identifier is the
+	 * accessory mod's: a Curios slot type ({@code ring}) or a Trinkets slot ({@code hand/ring}).
 	 */
-	public record Bauble(String slotIdentifier, int slotIndex, ItemStack stack, ResourceLocation icon) {}
+	public record Bauble(String slotIdentifier, int slotIndex, ItemStack stack, SlotIcon icon) {}
 
 	private boolean isPreview = false;
 	// The position and contents of the last render (read by the test scenes)
@@ -65,36 +53,12 @@ public class HudElementBaubles extends HudElement
 	}
 
 	/**
-	 * The Curios to show, in the order of the Curios slot types (as in the Curios inventory). Hidden slot types and
+	 * The accessories to show, in the slot order of the accessory mod (as in its inventory). Hidden slot types and
 	 * disabled slots are left out; empty slots only with {@code showEmpty}.
 	 */
 	public static List<Bauble> collectBaubles(Player player, boolean showEmpty)
 	{
-		List<Bauble> baubles = new ArrayList<Bauble>();
-		CuriosApi.getCuriosInventory(player).ifPresent(inventory ->
-		{
-			List<ICurioStacksHandler> handlers = new ArrayList<ICurioStacksHandler>(inventory.getCurios().values());
-			handlers.sort(Comparator.comparingInt((ICurioStacksHandler handler) -> slotType(player, handler.getIdentifier()).map(ISlotType::getOrder).orElse(Integer.MAX_VALUE))
-					.thenComparing(ICurioStacksHandler::getIdentifier));
-			for(ICurioStacksHandler handler : handlers)
-			{
-				if(!handler.isVisible())
-					continue;
-				IDynamicStackHandler stacks = handler.getStacks();
-				NonNullList<Boolean> activeStates = handler.getActiveStates();
-				for(int i = 0; i < stacks.getSlots(); i++)
-				{
-					if(i < activeStates.size() && !activeStates.get(i))
-						continue;
-					ItemStack checkStack = stacks.getStackInSlot(i);
-					if(!checkStack.isEmpty())
-						baubles.add(new Bauble(handler.getIdentifier(), i, checkStack, null));
-					else if(showEmpty)
-						baubles.add(new Bauble(handler.getIdentifier(), i, ItemStack.EMPTY, slotType(player, handler.getIdentifier()).map(ISlotType::getIcon).orElse(DUMMY_SLOT_ICON)));
-				}
-			}
-		});
-		return baubles;
+		return Platform.INSTANCE.collectBaubles(player, showEmpty);
 	}
 
 	// The list of the last game tick: collecting and sorting the Curios slots every frame (a slot type lookup per
@@ -115,11 +79,6 @@ public class HudElementBaubles extends HudElement
 			cachedShowEmpty = showEmpty;
 		}
 		return cached;
-	}
-
-	private static java.util.Optional<ISlotType> slotType(Player player, String identifier)
-	{
-		return CuriosApi.getSlot(identifier, player.level());
 	}
 
 	/**
@@ -179,7 +138,7 @@ public class HudElementBaubles extends HudElement
 		{
 			int iconX = rotateVertical ? x + 6 : horizontal == HorizontalAlignment.LEFT ? x + width + 1 : x - 11;
 			int iconY = rotateVertical ? vertical == VerticalAlignment.BOTTOM ? y - 11 : y + height + 1 : y + 6;
-			graphics.blit(CURIOS_ICON, iconX, iconY, 0, 0, 10, 10, 10, 10);
+			Platform.INSTANCE.drawModIcon(graphics, iconX, iconY);
 		}
 
 		// Draw the appropriate skin according to the skin type
@@ -219,22 +178,22 @@ public class HudElementBaubles extends HudElement
 			if(isPreview)
 			{
 				// Draw "Dummy" baubles in the HUD if in preview mode
-				graphics.blit(offsetX, offsetY, 0, 16, 16, mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(DUMMY_SLOT_ICON));
+				Platform.INSTANCE.dummySlotIcon().draw(graphics, offsetX, offsetY);
 				continue;
 			}
 			Bauble bauble = baublesToRender.get(i);
 			ItemStack stack = bauble.stack();
 			if(stack.isEmpty())
 			{
-				// An empty slot (show_empty_slots): its Curios icon, as in the Curios inventory
-				graphics.blit(offsetX, offsetY, 0, 16, 16, mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(bauble.icon()));
+				// An empty slot (show_empty_slots): its icon, as in the accessory mod's inventory
+				bauble.icon().draw(graphics, offsetX, offsetY);
 				continue;
 			}
 			// Draw the equipped Bauble items
-			NeoForge.EVENT_BUS.post(new RenderBaubleOnHUDEvent.Pre(stack, bauble.slotIdentifier(), bauble.slotIndex(), offsetX, offsetY, hudAlignment, rotateVertical, graphics, mc.font));
+			Platform.INSTANCE.onRenderBauble(false, stack, bauble.slotIdentifier(), bauble.slotIndex(), offsetX, offsetY, hudAlignment, rotateVertical, graphics, mc.font);
 			graphics.renderItem(stack, offsetX, offsetY);
 			graphics.renderItemDecorations(mc.font, stack, offsetX, offsetY);
-			NeoForge.EVENT_BUS.post(new RenderBaubleOnHUDEvent.Post(stack, bauble.slotIdentifier(), bauble.slotIndex(), offsetX, offsetY, hudAlignment, rotateVertical, graphics, mc.font));
+			Platform.INSTANCE.onRenderBauble(true, stack, bauble.slotIdentifier(), bauble.slotIndex(), offsetX, offsetY, hudAlignment, rotateVertical, graphics, mc.font);
 		}
 
 		RenderSystem.disableBlend();
@@ -299,18 +258,10 @@ public class HudElementBaubles extends HudElement
 	}
 
 	/**
-	 * Registered on the mod bus by {@link ModSpartanHUDBaubles}
+	 * Draws the HUD element: the loader puts it right above the experience bar, where the original drew it (NeoForge:
+	 * a GUI layer above VanillaGuiLayers.EXPERIENCE_LEVEL, Fabric: a mixin at the end of Gui.renderExperienceLevel)
 	 */
-	public static void onRegisterGuiLayers(RegisterGuiLayersEvent ev)
-	{
-		// The original drew after the experience bar
-		ev.registerAbove(VanillaGuiLayers.EXPERIENCE_LEVEL, LAYER, HudElementBaubles::onHUDOverlay);
-	}
-
-	/**
-	 * Allows drawing of the HUD over the screen
-	 */
-	private static void onHUDOverlay(GuiGraphics graphics, DeltaTracker deltaTracker)
+	public static void onHUDOverlay(GuiGraphics graphics, DeltaTracker deltaTracker)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		if(Config.DISABLE_HUD.get() || mc.options.hideGui || mc.player == null)

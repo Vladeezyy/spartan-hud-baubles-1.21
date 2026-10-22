@@ -14,9 +14,7 @@ import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.datafixers.util.Pair;
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
-import com.oblivioussp.spartanhudbaubles.client.event.RenderBaubleOnHUDEvent;
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.Alignment;
-import com.oblivioussp.spartanhudbaubles.client.gui.GuiConfigSHB;
 import com.oblivioussp.spartanhudbaubles.client.gui.GuiPreviewHUD;
 import com.oblivioussp.spartanhudbaubles.client.gui.HudElementBaubles;
 import com.oblivioussp.spartanhudbaubles.client.gui.HudElementBaubles.Bauble;
@@ -50,16 +48,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.minecraft.world.level.storage.LevelResource;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.loading.FMLPaths;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 /**
  * Development scene, inert unless the {@code spartanhudbaubles.scene} system property is {@code dev}
@@ -70,10 +58,11 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
  * saves {@code run/screenshots/scene_*.png}, then quits. {@code -Dspartanhudbaubles.scene.lang=ru_ru} switches the
  * language.
  */
-@EventBusSubscriber(modid = ModSpartanHUDBaubles.ID, value = Dist.CLIENT)
 public final class DevScene
 {
 	static final String MODE = System.getProperty("spartanhudbaubles.scene", "");
+	/** The accessory mod of the scenes (set by the loader's port/*SceneHooks) */
+	static SceneAccessories accessories;
 	private static final boolean ENABLED = MODE.equals("dev");
 	static final String LANG = System.getProperty("spartanhudbaubles.scene.lang", "en_us");
 	private static final String WORLD = "shb_scene";
@@ -110,13 +99,13 @@ public final class DevScene
 		t = measure(t + 20, "two rings", () -> {}, mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			int gw = mc.getWindow().getGuiScaledWidth(), gh = mc.getWindow().getGuiScaledHeight();
-			check("two rings: collected in slot order", slots(hud.getLastRendered()).equals(List.of("ring#0", "ring#1")), slots(hud.getLastRendered()));
+			check("two rings: collected in slot order", slots(hud.getLastRendered()).equals(expected("ring#0", "ring#1")), slots(hud.getLastRendered()));
 			check("two rings: bottom right, 40 x 22", hud.getLastX() == gw - 40 && hud.getLastY() == gh - 22 && hud.getWidth() == 40 && hud.getHeight() == 22,
 					hud.getLastX() + "," + hud.getLastY() + " " + hud.getWidth() + "x" + hud.getHeight() + " on " + gw + "x" + gh);
 			check("two rings: Pre/Post events at the slots", framePre.size() == 2 && framePost == 2 && framePre.get(0)[0] == gw - 37 && framePre.get(1)[0] == gw - 19 && framePre.get(0)[1] == gh - 19,
 					positions(framePre) + ", post " + framePost);
 			checkDrawn(mc, "two rings: hotbar skin drawn", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
-			checkDrawn(mc, "two rings: Curios icon drawn left of it", hud.getLastX() - 11, hud.getLastY() + 6, 10, 10, true);
+			checkDrawn(mc, "two rings: accessory mod icon drawn left of it", hud.getLastX() - 11, hud.getLastY() + 6, 10, 10, true);
 		});
 		at(t += 2, mc -> shot(mc, "default_two"));
 		// Seven: the most Baubles had
@@ -131,7 +120,7 @@ public final class DevScene
 		at(t += 3, mc -> server(mc, p -> equip(p, allItems())));
 		t = measure(t + 15, "twelve", () -> {}, mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
-			check("twelve: collected in Curios slot order", slots(hud.getLastRendered()).equals(List.of("curio#0", "curio#1", "head#0", "necklace#0", "back#0", "body#0", "bracelet#0", "hands#0", "ring#0", "ring#1", "belt#0", "charm#0")),
+			check("twelve: collected in slot order", slots(hud.getLastRendered()).equals(expected("curio#0", "curio#1", "head#0", "necklace#0", "back#0", "body#0", "bracelet#0", "hands#0", "ring#0", "ring#1", "belt#0", "charm#0")),
 					slots(hud.getLastRendered()));
 			check("twelve: one row, 220 x 22", hud.getWidth() == 220 && hud.getHeight() == 22 && framePre.size() == 12, hud.getWidth() + "x" + hud.getHeight());
 			checkDrawn(mc, "twelve: hotbar skin drawn for more than 7 slots (issue #1)", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
@@ -141,16 +130,16 @@ public final class DevScene
 		});
 		at(t += 2, mc -> shot(mc, "twelve"));
 		// Durability shown and updated live (question in issue #1)
-		at(t += 3, mc -> server(mc, p -> handler(p, "back").getStacks().getStackInSlot(0).setDamageValue(400)));
+		at(t += 3, mc -> server(mc, p -> stack(p, "back", 0).setDamageValue(400)));
 		at(t += 10, mc -> check("durability: the elytra's damage reaches the client", clientStack(mc, "back", 0).getDamageValue() == 400, clientStack(mc, "back", 0).getDamageValue()));
 		// Issue #2: a Curio that breaks in its slot (the stack shrinks without the slot being set) leaves the HUD
 		at(t += 3, mc -> server(mc, p -> {
-			brokenRing = handler(p, "ring").getStacks().getStackInSlot(1);
+			brokenRing = stack(p, "ring", 1);
 			brokenRing.shrink(1);
 		}));
 		at(t += 10, mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
-			check("broken ring leaves the HUD without opening the inventory (issue #2)", !slots(hud.getLastRendered()).contains("ring#1") && framePre.size() == 11, slots(hud.getLastRendered()));
+			check("broken ring leaves the HUD without opening the inventory (issue #2)", !slots(hud.getLastRendered()).contains(expected("ring#1").get(0)) && framePre.size() == 11, slots(hud.getLastRendered()));
 		});
 		// More lines
 		t = measure(t + 5, "wrapped", () -> Config.MAX_SLOTS_PER_LINE.set(5), mc -> {
@@ -176,8 +165,8 @@ public final class DevScene
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			List<Bauble> shown = hud.getLastRendered();
 			check("show_empty_slots: all 12 slots, 2 of them with an item", shown.size() == 12 && shown.stream().filter(b -> !b.stack().isEmpty()).count() == 2 && framePre.size() == 2, slots(shown) + ", drawn " + framePre.size());
-			long missing = shown.stream().filter(b -> b.stack().isEmpty()).filter(b -> mc.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(b.icon()).contents().name().equals(MissingTextureAtlasSprite.getLocation())).count();
-			check("show_empty_slots: every empty slot has its Curios icon", missing == 0, missing + " missing");
+			long missing = shown.stream().filter(b -> b.stack().isEmpty()).filter(b -> b.icon().isMissing(mc)).count();
+			check("show_empty_slots: every empty slot has its slot icon", missing == 0, missing + " missing");
 			checkDrawn(mc, "show_empty_slots: skin drawn", hud.getLastX(), hud.getLastY(), hud.getWidth(), hud.getHeight(), true);
 		});
 		at(t += 2, mc -> {
@@ -200,7 +189,7 @@ public final class DevScene
 		t = measure(t + 3, "no skin", () -> Config.SKIN_TYPE.set(SkinType.NONE), mc -> {
 			HudElementBaubles hud = HudElementBaubles.getActive();
 			check("no skin: items still drawn", framePre.size() == 6, framePre.size());
-			checkDrawn(mc, "no skin: no Curios icon", hud.getLastX() - 11, hud.getLastY() + 6, 10, 10, false);
+			checkDrawn(mc, "no skin: no accessory mod icon", hud.getLastX() - 11, hud.getLastY() + 6, 10, 10, false);
 			checkDrawn(mc, "no skin: no frame (corner pixel)", hud.getLastX(), hud.getLastY(), 2, 2, false);
 		});
 		at(t += 2, mc -> shot(mc, "skin_none"));
@@ -254,7 +243,7 @@ public final class DevScene
 		at(t += 10, mc -> check("survival again: drawn", framePre.size() == 6, framePre.size()));
 		// The config GUI from the mods list, the Preview HUD button, a value changed by a click
 		at(t += 3, mc -> openConfig(mc, null));
-		at(t += 10, mc -> check("config GUI opens on the client settings with the Preview HUD button", mc.screen instanceof GuiConfigSHB && previewButton(mc.screen) != null, mc.screen));
+		at(t += 10, mc -> check("config GUI opens on the client settings with the Preview HUD button", isConfigScreen(mc.screen) && previewButton(mc.screen) != null, mc.screen));
 		at(t += 2, mc -> shot(mc, "config"));
 		at(t += 3, mc -> click(mc, previewButton(mc.screen)));
 		at(t += 5, mc -> {
@@ -271,7 +260,7 @@ public final class DevScene
 			mc.screen.keyPressed(GLFW.GLFW_KEY_ESCAPE, 0, 0);
 		});
 		at(t += 5, mc -> {
-			check("Escape returns to the config GUI", mc.screen instanceof GuiConfigSHB, mc.screen);
+			check("Escape returns to the config GUI", isConfigScreen(mc.screen), mc.screen);
 			click(mc, valueButton(mc.screen, Config.SKIN_TYPE.get()));
 		});
 		at(t += 5, mc -> {
@@ -291,7 +280,7 @@ public final class DevScene
 			mc.screen.mouseClicked(100, 100, 0);
 		});
 		at(t += 5, mc -> {
-			check("a click anywhere closes the preview", mc.screen instanceof GuiConfigSHB, mc.screen);
+			check("a click anywhere closes the preview", isConfigScreen(mc.screen), mc.screen);
 			mc.screen.onClose();
 			watchScreens = 12;
 		});
@@ -335,8 +324,8 @@ public final class DevScene
 		return t + 8;
 	}
 
-	@SubscribeEvent
-	public static void onTick(ClientTickEvent.Post event)
+	// The loader modules call this after every client tick (port/*SceneHooks)
+	public static void onTick()
 	{
 		if(!ENABLED)
 			return;
@@ -461,14 +450,14 @@ public final class DevScene
 	private static int screenShots;
 
 	/** Logs and saves every new look of a screen (its class and widgets), to see every screen the player sees */
-	@SubscribeEvent
-	public static void onScreenRendered(net.neoforged.neoforge.client.event.ScreenEvent.Render.Post event)
+	/** After a screen is drawn (NeoForge ScreenEvent.Render.Post, Fabric ScreenEvents.afterRender) */
+	public static void onScreenRendered(Screen screen)
 	{
 		if(!ENABLED)
 			return;
 		List<AbstractWidget> found = new ArrayList<>();
-		collectWidgets(event.getScreen().children(), found);
-		String signature = event.getScreen().getClass().getSimpleName() + " " + found.stream().filter(w -> w.visible).map(w -> w.getMessage().getString() + "@" + w.getX() + "," + w.getY()).toList();
+		collectWidgets(screen.children(), found);
+		String signature = screen.getClass().getSimpleName() + " " + found.stream().filter(w -> w.visible).map(w -> w.getMessage().getString() + "@" + w.getX() + "," + w.getY()).toList();
 		if(signature.equals(lastScreen))
 			return;
 		lastScreen = signature;
@@ -476,8 +465,8 @@ public final class DevScene
 		shot(Minecraft.getInstance(), "screen_" + screenShots++);
 	}
 
-	@SubscribeEvent
-	public static void onRenderGuiPre(RenderGuiEvent.Pre event)
+	/** Between two frames of the GUI (NeoForge RenderGuiEvent.Pre, Fabric: after the HUD is drawn) */
+	public static void onFrame()
 	{
 		if(MODE.isEmpty())
 			return;
@@ -488,15 +477,14 @@ public final class DevScene
 		collectingPost = 0;
 	}
 
-	@SubscribeEvent
-	public static void onBaublePre(RenderBaubleOnHUDEvent.Pre event)
+	/** RenderBaubleOnHUDEvent.Pre (Fabric: RenderBaubleOnHUDCallback.PRE) */
+	public static void onBaublePre(int x, int y)
 	{
 		if(!MODE.isEmpty())
-			collectingPre.add(new int[] { event.getPositionX(), event.getPositionY() });
+			collectingPre.add(new int[] { x, y });
 	}
 
-	@SubscribeEvent
-	public static void onBaublePost(RenderBaubleOnHUDEvent.Post event)
+	public static void onBaublePost()
 	{
 		if(!MODE.isEmpty())
 			collectingPost++;
@@ -547,22 +535,10 @@ public final class DevScene
 		player.teleportTo(player.serverLevel(), spawn.getX() + 0.5, y, spawn.getZ() + 0.5, 30.0F, 5.0F);
 	}
 
-	/** Gives players all ten Curios slot types (two ring and two curio slots) and makes the scene's items valid in them */
+	/** Gives players all ten slot types (two ring and two curio slots) and makes the scene's items valid in them */
 	static void writeSlotsDataPack(Path pack) throws IOException
 	{
-		Files.createDirectories(pack.resolve("data/shb_test/curios/entities"));
-		Files.createDirectories(pack.resolve("data/shb_test/curios/slots"));
-		Files.createDirectories(pack.resolve("data/curios/tags/item"));
-		Files.writeString(pack.resolve("pack.mcmeta"), "{\"pack\":{\"pack_format\":48,\"description\":\"Spartan HUD: Baubles test slots\"}}");
-		Files.writeString(pack.resolve("data/shb_test/curios/entities/player.json"),
-				"{\"entities\":[\"minecraft:player\"],\"slots\":[\"curio\",\"head\",\"necklace\",\"back\",\"body\",\"bracelet\",\"hands\",\"ring\",\"belt\",\"charm\"]}");
-		Files.writeString(pack.resolve("data/shb_test/curios/slots/ring.json"), "{\"size\":2}");
-		Files.writeString(pack.resolve("data/shb_test/curios/slots/curio.json"), "{\"size\":2}");
-		for(Map.Entry<String, List<ItemStack>> entry : itemsBySlot().entrySet())
-		{
-			List<String> ids = entry.getValue().stream().map(s -> "\"" + net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(s.getItem()) + "\"").distinct().toList();
-			Files.writeString(pack.resolve("data/curios/tags/item/" + entry.getKey() + ".json"), "{\"values\":[" + String.join(",", ids) + "]}");
-		}
+		accessories.writeSlotsDataPack(pack, itemsBySlot(), 2);
 	}
 
 	/** The scene's Curios by slot type, in the Curios slot order */
@@ -612,37 +588,48 @@ public final class DevScene
 		return result;
 	}
 
-	/** Empties every Curio slot of the player, then equips the given Curios */
+	/** Empties every accessory slot of the player, then equips the given accessories (by scene slot name) */
 	static void equip(ServerPlayer player, Map<String, List<ItemStack>> items)
 	{
-		CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-			for(ICurioStacksHandler handler : inventory.getCurios().values())
-				for(int i = 0; i < handler.getSlots(); i++)
-					handler.getStacks().setStackInSlot(i, ItemStack.EMPTY);
-			items.forEach((slot, stacks) -> {
-				for(int i = 0; i < stacks.size(); i++)
-					inventory.setEquippedCurio(slot, i, stacks.get(i).copy());
-			});
+		for(SceneAccessories.Slot slot : accessories.slots(player))
+			for(int i = 0; i < slot.size(); i++)
+				slot.set(i, ItemStack.EMPTY);
+		items.forEach((name, stacks) -> {
+			SceneAccessories.Slot slot = accessories.slot(player, name);
+			for(int i = 0; i < stacks.size(); i++)
+				slot.set(i, stacks.get(i).copy());
 		});
 	}
 
-	static ICurioStacksHandler handler(net.minecraft.world.entity.LivingEntity entity, String slot)
+	/** The live stack in a slot (scene slot name) */
+	static ItemStack stack(net.minecraft.world.entity.LivingEntity entity, String name, int index)
 	{
-		return CuriosApi.getCuriosInventory(entity).flatMap(inventory -> inventory.getStacksHandler(slot)).orElseThrow();
+		return accessories.slot(entity, name).get(index);
 	}
 
-	static ItemStack clientStack(Minecraft mc, String slot, int index)
+	static ItemStack clientStack(Minecraft mc, String name, int index)
 	{
-		return handler(mc.player, slot).getStacks().getStackInSlot(index);
+		return stack(mc.player, name, index);
 	}
 
 	static void checkSlots(Minecraft mc)
 	{
-		server(mc, p -> Log.info("[scene] server: packs " + p.getServer().getPackRepository().getSelectedIds() + ", player slots " + CuriosApi.getPlayerSlots(p).keySet()
-				+ ", inventory " + CuriosApi.getCuriosInventory(p).map(i -> i.getCurios().keySet()).orElse(null)));
+		server(mc, p -> Log.info("[scene] server: packs " + p.getServer().getPackRepository().getSelectedIds() + ", " + accessories.describe(p)));
 		Map<String, Integer> sizes = new LinkedHashMap<>();
-		CuriosApi.getCuriosInventory(mc.player).ifPresent(inventory -> inventory.getCurios().forEach((id, handler) -> sizes.put(id, handler.getSlots())));
-		check("data pack: the client has the 10 slot types, 2 ring and 2 curio slots", sizes.size() == 10 && sizes.getOrDefault("ring", 0) == 2 && sizes.getOrDefault("curio", 0) == 2, sizes);
+		for(SceneAccessories.Slot slot : accessories.slots(mc.player))
+			sizes.put(slot.id(), slot.size());
+		check("data pack: the client has the 10 slot types, 2 ring and 2 curio slots", sizes.size() == 10 && sizes.getOrDefault(accessories.id("ring"), 0) == 2 && sizes.getOrDefault(accessories.id("curio"), 0) == 2, sizes);
+	}
+
+	/** The HUD's names ("id#index") of scene slots given as "name#index" */
+	static List<String> expected(String... slots)
+	{
+		return java.util.Arrays.stream(slots).map(slot -> accessories.id(slot.substring(0, slot.indexOf('#'))) + slot.substring(slot.indexOf('#'))).toList();
+	}
+
+	static boolean isConfigScreen(Screen screen)
+	{
+		return screen != null && screen.getClass().getSimpleName().equals("GuiConfigSHB");
 	}
 
 	// ------------------------------------------------------------------------------------------------------ checks
@@ -735,9 +722,7 @@ public final class DevScene
 
 	static void openConfig(Minecraft mc, Screen parent)
 	{
-		var container = ModList.get().getModContainerById(ModSpartanHUDBaubles.ID).orElseThrow();
-		Screen screen = IConfigScreenFactory.getForMod(container.getModInfo()).orElseThrow().createScreen(container, parent);
-		mc.setScreen(screen);
+		mc.setScreen(accessories.configScreen(mc, parent));
 	}
 
 	static AbstractWidget previewButton(Screen screen)
@@ -790,7 +775,7 @@ public final class DevScene
 	{
 		try
 		{
-			return Files.readString(FMLPaths.CONFIGDIR.get().resolve(ModSpartanHUDBaubles.ID + "-client.toml"));
+			return Files.readString(accessories.configDir().resolve(ModSpartanHUDBaubles.ID + "-client.toml"));
 		}
 		catch(IOException e)
 		{

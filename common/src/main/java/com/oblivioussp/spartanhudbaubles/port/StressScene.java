@@ -32,13 +32,6 @@ import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RenderGuiEvent;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 /**
  * Stress scene ({@code tools/scenetest.sh -Pscene=stress}), inert unless {@code spartanhudbaubles.scene} is
@@ -46,7 +39,6 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
  * rate with and without the HUD element, Curios changing every tick, every GUI scale and a small window with every
  * alignment, extreme config values, leaving and rejoining the world.
  */
-@EventBusSubscriber(modid = ModSpartanHUDBaubles.ID, value = Dist.CLIENT)
 public final class StressScene
 {
 	private static final boolean ENABLED = DevScene.MODE.equals("stress");
@@ -73,7 +65,7 @@ public final class StressScene
 			DevScene.server(mc, StressScene::setup);
 		});
 		at(t += 20, mc -> {
-			int slots = CuriosApi.getCuriosInventory(mc.player).map(i -> i.getCurios().values().stream().mapToInt(ICurioStacksHandler::getSlots).sum()).orElse(0);
+			int slots = DevScene.accessories.slots(mc.player).stream().mapToInt(SceneAccessories.Slot::size).sum();
 			check("74 Curio slots on the client", slots == CURIO_SLOTS + 10, slots);
 			DevScene.server(mc, p -> fill(p, 1.0));
 		});
@@ -121,8 +113,7 @@ public final class StressScene
 		// Curios change every tick (equipped, removed, shrunk, damaged)
 		at(t += 10, mc -> churnTicks = 200);
 		at(t += 210, mc -> {
-			int onClient = CuriosApi.getCuriosInventory(mc.player).map(i -> (int)i.getCurios().values().stream()
-					.flatMap(h -> java.util.stream.IntStream.range(0, h.getSlots()).mapToObj(i2 -> h.getStacks().getStackInSlot(i2))).filter(s -> !s.isEmpty()).count()).orElse(-1);
+			int onClient = countEquipped(mc.player);
 			int shown = HudElementBaubles.getActive().getLastRendered().size();
 			check("after 200 ticks of changes the HUD matches the client inventory", onClient == shown && DevScene.framePre.size() == shown, shown + " shown, " + onClient + " equipped");
 		});
@@ -210,58 +201,58 @@ public final class StressScene
 		player.teleportTo(player.serverLevel(), player.getX(), player.getY(), player.getZ(), 0.0F, -60.0F);
 	}
 
-	/** Fills every Curio slot with a chance of {@code share} with different items */
+	/** Fills every accessory slot with a chance of {@code share} with different items */
 	private static void fill(ServerPlayer player, double share)
 	{
 		List<Item> items = BuiltInRegistries.ITEM.stream().filter(i -> i != Items.AIR).toList();
-		CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-			int n = 0;
-			for(ICurioStacksHandler handler : inventory.getCurios().values())
-				for(int i = 0; i < handler.getSlots(); i++, n++)
-					handler.getStacks().setStackInSlot(i, RANDOM.nextDouble() < share ? new ItemStack(items.get((n * 37) % items.size())) : ItemStack.EMPTY);
-		});
+		int n = 0;
+		for(SceneAccessories.Slot slot : DevScene.accessories.slots(player))
+			for(int i = 0; i < slot.size(); i++, n++)
+				slot.set(i, RANDOM.nextDouble() < share ? new ItemStack(items.get((n * 37) % items.size())) : ItemStack.EMPTY);
 	}
 
 	/** One random change: equip, remove, shrink or damage */
 	private static void churn(ServerPlayer player)
 	{
 		List<Item> items = BuiltInRegistries.ITEM.stream().filter(i -> i != Items.AIR).toList();
-		CuriosApi.getCuriosInventory(player).ifPresent(inventory -> {
-			List<ICurioStacksHandler> handlers = new ArrayList<>(inventory.getCurios().values());
-			for(int k = 0; k < 5; k++)
+		List<SceneAccessories.Slot> slots = DevScene.accessories.slots(player);
+		for(int k = 0; k < 5; k++)
+		{
+			SceneAccessories.Slot handler = slots.get(RANDOM.nextInt(slots.size()));
+			int slot = RANDOM.nextInt(handler.size());
+			ItemStack stack = handler.get(slot);
+			switch(RANDOM.nextInt(4))
 			{
-				ICurioStacksHandler handler = handlers.get(RANDOM.nextInt(handlers.size()));
-				int slot = RANDOM.nextInt(handler.getSlots());
-				ItemStack stack = handler.getStacks().getStackInSlot(slot);
-				switch(RANDOM.nextInt(4))
-				{
-					case 0 -> handler.getStacks().setStackInSlot(slot, new ItemStack(items.get(RANDOM.nextInt(items.size())), 1 + RANDOM.nextInt(64)));
-					case 1 -> handler.getStacks().setStackInSlot(slot, ItemStack.EMPTY);
-					case 2 -> stack.shrink(1);
-					default -> {
-						if(stack.isDamageableItem())
-							stack.setDamageValue(RANDOM.nextInt(stack.getMaxDamage()));
-					}
+				case 0 -> handler.set(slot, new ItemStack(items.get(RANDOM.nextInt(items.size())), 1 + RANDOM.nextInt(64)));
+				case 1 -> handler.set(slot, ItemStack.EMPTY);
+				case 2 -> stack.shrink(1);
+				default -> {
+					if(stack.isDamageableItem())
+						stack.setDamageValue(RANDOM.nextInt(stack.getMaxDamage()));
 				}
 			}
-		});
+		}
 	}
 
 	private static int countEquipped(net.minecraft.world.entity.LivingEntity entity)
 	{
-		return CuriosApi.getCuriosInventory(entity).map(i -> (int)i.getCurios().values().stream()
-				.flatMap(h -> java.util.stream.IntStream.range(0, h.getSlots()).mapToObj(n -> h.getStacks().getStackInSlot(n))).filter(st -> !st.isEmpty()).count()).orElse(-1);
+		int n = 0;
+		for(SceneAccessories.Slot slot : DevScene.accessories.slots(entity))
+			for(int i = 0; i < slot.size(); i++)
+				if(!slot.get(i).isEmpty())
+					n++;
+		return n;
 	}
 
-	@SubscribeEvent
-	public static void onRenderGui(RenderGuiEvent.Post event)
+	/** After a frame of the GUI (NeoForge RenderGuiEvent.Post, Fabric HudRenderCallback) */
+	public static void onFrame()
 	{
 		if(ENABLED)
 			frames++;
 	}
 
-	@SubscribeEvent
-	public static void onTick(ClientTickEvent.Post event)
+	// The loader modules call this after every client tick (port/*SceneHooks)
+	public static void onTick()
 	{
 		if(!ENABLED)
 			return;
@@ -289,9 +280,8 @@ public final class StressScene
 				mc.resizeDisplay();
 				try
 				{
-					DevScene.writeSlotsDataPack(mc.getLevelSource().getBaseDir().resolve(WORLD).resolve("datapacks/shb_slots"));
 					// 64 generic curio slots
-					java.nio.file.Files.writeString(mc.getLevelSource().getBaseDir().resolve(WORLD).resolve("datapacks/shb_slots/data/shb_test/curios/slots/curio.json"), "{\"size\":" + CURIO_SLOTS + "}");
+					DevScene.accessories.writeSlotsDataPack(mc.getLevelSource().getBaseDir().resolve(WORLD).resolve("datapacks/shb_slots"), DevScene.itemsBySlot(), CURIO_SLOTS);
 				}
 				catch(IOException e)
 				{

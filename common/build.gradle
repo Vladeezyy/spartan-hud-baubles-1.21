@@ -1,0 +1,43 @@
+plugins {
+    id 'multiloader-common'
+    id 'net.neoforged.moddev'
+}
+
+neoForge {
+    neoFormVersion = neo_form_version
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+}
+
+// Compile-time stubs of NeoForge classes the common code names (src/stubs, in no jar)
+sourceSets {
+    stubs
+}
+
+neoForge {
+    addModdingDependenciesTo sourceSets.stubs
+}
+
+dependencies {
+    // NeoForge's ModConfigSpec for the common code (Forge Config API Port's API jar)
+    compileOnly "fuzs.forgeconfigapiport:forgeconfigapiport-common-neoforgeapi:${forgeconfigapiport_version}"
+    compileOnly sourceSets.stubs.output
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
+}
