@@ -3,7 +3,7 @@ package com.oblivioussp.spartanhudbaubles.client.gui;
 
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.Alignment;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public abstract class HudElement
 {
@@ -85,5 +85,5 @@ public abstract class HudElement
 		}
 	}
 
-	public abstract void render(GuiGraphics graphics);
+	public abstract void render(GuiGraphicsExtractor graphics);
 }

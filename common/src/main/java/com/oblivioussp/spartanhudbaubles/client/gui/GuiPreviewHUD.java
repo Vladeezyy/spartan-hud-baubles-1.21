@@ -2,7 +2,7 @@ package com.oblivioussp.spartanhudbaubles.client.gui;
 
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.screens.Screen;
@@ -59,21 +59,21 @@ public class GuiPreviewHUD extends Screen
 	}
 
 	@Override
-	public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+	public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick)
 	{
 		// In game the world and its HUD stay visible behind the preview
 		if(minecraft.level == null)
-			super.renderBackground(graphics, mouseX, mouseY, partialTick);
+			super.extractBackground(graphics, mouseX, mouseY, partialTick);
 	}
 
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks)
+	public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTicks)
 	{
 		int textWidth = Math.max(font.width(title), font.width(hint)) + 8;
 		textY = overlapsHud(width / 2 - textWidth / 2, 4, textWidth, 26) ? height / 2 - 50 : 8;
-		super.render(graphics, mouseX, mouseY, partialTicks);
-		graphics.drawCenteredString(font, title, width / 2, textY, 0xFFFFFF);
-		graphics.drawCenteredString(font, hint, width / 2, textY + 12, 0xA0A0A0);
+		super.extractRenderState(graphics, mouseX, mouseY, partialTicks);
+		graphics.centeredText(font, title, width / 2, textY, 0xFFFFFF);
+		graphics.centeredText(font, hint, width / 2, textY + 12, 0xA0A0A0);
 
 		HumanoidArm offhandSide = minecraft.options.mainHand().get().getOpposite();
 
@@ -124,7 +124,7 @@ public class GuiPreviewHUD extends Screen
 			int hoverTextSize = font.width(hoverText);
 			int hoverX = (width - hoverTextSize) / 2;
 			int hoverY = height - 59;
-			graphics.drawString(font, hoverText, hoverX, hoverY, 0xFFFFFFFF);
+			graphics.text(font, hoverText, hoverX, hoverY, 0xFFFFFFFF);
 		}
 
 		hud.render(graphics);

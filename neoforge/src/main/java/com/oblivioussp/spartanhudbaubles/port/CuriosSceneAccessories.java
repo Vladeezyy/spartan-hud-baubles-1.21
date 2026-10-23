@@ -31,7 +31,7 @@ final class CuriosSceneAccessories implements SceneAccessories
 	}
 
 	@Override
-	public void writeSlotsDataPack(Path pack, Map<String, List<ItemStack>> items, int curioSlots) throws IOException
+	public void writeSlotsDataPack(Path pack, Map<String, List<net.minecraft.world.item.Item>> items, int curioSlots) throws IOException
 	{
 		Files.createDirectories(pack.resolve("data/shb_test/curios/entities"));
 		Files.createDirectories(pack.resolve("data/shb_test/curios/slots"));
@@ -39,12 +39,12 @@ final class CuriosSceneAccessories implements SceneAccessories
 		Files.writeString(pack.resolve("pack.mcmeta"), "{\"pack\":{\"pack_format\":48,\"description\":\"Spartan HUD: Baubles test slots\"}}");
 		Files.writeString(pack.resolve("data/shb_test/curios/entities/player.json"),
 				"{\"entities\":[\"minecraft:player\"],\"slots\":[" + String.join(",", items.keySet().stream().map(name -> "\"" + name + "\"").toList()) + "]}");
-		for(Map.Entry<String, List<ItemStack>> entry : items.entrySet())
+		for(Map.Entry<String, List<net.minecraft.world.item.Item>> entry : items.entrySet())
 		{
 			int size = entry.getKey().equals("curio") ? curioSlots : entry.getValue().size();
 			if(size > 1)
 				Files.writeString(pack.resolve("data/shb_test/curios/slots/" + entry.getKey() + ".json"), "{\"size\":" + size + "}");
-			List<String> ids = entry.getValue().stream().map(s -> "\"" + BuiltInRegistries.ITEM.getKey(s.getItem()) + "\"").distinct().toList();
+			List<String> ids = entry.getValue().stream().map(s -> "\"" + BuiltInRegistries.ITEM.getKey(s) + "\"").distinct().toList();
 			Files.writeString(pack.resolve("data/curios/tags/item/" + entry.getKey() + ".json"), "{\"values\":[" + String.join(",", ids) + "]}");
 		}
 	}

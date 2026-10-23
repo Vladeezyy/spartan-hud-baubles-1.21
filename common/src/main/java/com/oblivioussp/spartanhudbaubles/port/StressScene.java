@@ -95,7 +95,7 @@ public final class StressScene
 			int guiScale = scale;
 			at(t += 5, mc -> {
 				mc.options.guiScale().set(guiScale);
-				mc.resizeDisplay();
+				mc.resizeGui();
 			});
 			t = alignments(t, "GUI scale " + scale);
 		}
@@ -108,7 +108,7 @@ public final class StressScene
 		at(t += 5, mc -> {
 			GLFW.glfwSetWindowSize(mc.getWindow().handle(), 1600, 900);
 			mc.options.guiScale().set(3);
-			mc.resizeDisplay();
+			mc.resizeGui();
 			Config.ALIGNMENT.set(Alignment.BOTTOM_RIGHT);
 			Config.ROTATE_VERTICAL.set(false);
 		});
@@ -198,7 +198,7 @@ public final class StressScene
 		var server = player.level().getServer();
 		server.overworld().getGameRules().set(GameRules.SPAWN_MOBS, false, server);
 		server.overworld().getGameRules().set(GameRules.ADVANCE_TIME, false, server);
-		player.level().setDayTime(6000);
+		player.level().getServer().getCommands().performPrefixedCommand(player.level().getServer().createCommandSourceStack().withSuppressedOutput(), "time set 6000");
 		player.setInvulnerable(true);
 		player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), java.util.Set.of(), 0.0F, -60.0F, true);
 	}
@@ -279,11 +279,11 @@ public final class StressScene
 				mc.options.enableVsync().set(false);
 				mc.options.framerateLimit().set(260);
 				mc.options.pauseOnLostFocus = false;
-				mc.resizeDisplay();
+				mc.resizeGui();
 				try
 				{
 					// 64 generic curio slots
-					DevScene.accessories.writeSlotsDataPack(mc.getLevelSource().getBaseDir().resolve(WORLD).resolve("datapacks/shb_slots"), DevScene.itemsBySlot(), CURIO_SLOTS);
+					DevScene.accessories.writeSlotsDataPack(mc.getLevelSource().getBaseDir().resolve(WORLD).resolve("datapacks/shb_slots"), DevScene.itemTypesBySlot(), CURIO_SLOTS);
 				}
 				catch(IOException e)
 				{
@@ -291,7 +291,7 @@ public final class StressScene
 				}
 				WorldDataConfiguration packs = new WorldDataConfiguration(new net.minecraft.world.level.DataPackConfig(List.of("vanilla", "mod_data", "file/shb_slots"), List.of()),
 						net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS);
-				LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(FeatureFlags.DEFAULT_FLAGS), packs);
+				LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, new LevelSettings.DifficultySettings(Difficulty.PEACEFUL, false, false), true, packs);
 				mc.createWorldOpenFlows().createFreshLevel(WORLD, settings, new WorldOptions(20261013L, false, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
 			}
 			else

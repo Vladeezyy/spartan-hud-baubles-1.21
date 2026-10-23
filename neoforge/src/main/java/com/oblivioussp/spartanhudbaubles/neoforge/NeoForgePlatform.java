@@ -12,7 +12,7 @@ import com.oblivioussp.spartanhudbaubles.client.gui.SlotIcon;
 import com.oblivioussp.spartanhudbaubles.platform.Platform;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.Identifier;
@@ -75,7 +75,7 @@ public class NeoForgePlatform implements Platform
 	}
 
 	@Override
-	public void drawModIcon(GuiGraphics graphics, int x, int y)
+	public void drawModIcon(GuiGraphicsExtractor graphics, int x, int y)
 	{
 		graphics.blit(RenderPipelines.GUI_TEXTURED, CURIOS_ICON, x, y, 0, 0, 10, 10, 10, 10);
 	}
@@ -87,7 +87,7 @@ public class NeoForgePlatform implements Platform
 	}
 
 	@Override
-	public void onRenderBauble(boolean post, ItemStack stack, String slotIdentifier, int slotIndex, int x, int y, Alignment alignment, boolean vertical, GuiGraphics graphics, Font font)
+	public void onRenderBauble(boolean post, ItemStack stack, String slotIdentifier, int slotIndex, int x, int y, Alignment alignment, boolean vertical, GuiGraphicsExtractor graphics, Font font)
 	{
 		NeoForge.EVENT_BUS.post(post ? new RenderBaubleOnHUDEvent.Post(stack, slotIdentifier, slotIndex, x, y, alignment, vertical, graphics, font)
 				: new RenderBaubleOnHUDEvent.Pre(stack, slotIdentifier, slotIndex, x, y, alignment, vertical, graphics, font));

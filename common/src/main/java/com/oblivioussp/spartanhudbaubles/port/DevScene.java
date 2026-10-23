@@ -360,7 +360,7 @@ public final class DevScene
 			mc.options.guiScale().set(3);
 			mc.options.cloudStatus().set(CloudStatus.OFF);
 			mc.options.pauseOnLostFocus = false;
-			mc.resizeDisplay();
+			mc.resizeGui();
 			// The slot data pack is in the world from the start (Curios does not send new slot types to a player who is
 			// already in the world after /reload; mods' slots exist at login anyway)
 			try
@@ -373,7 +373,7 @@ public final class DevScene
 			}
 			WorldDataConfiguration packs = new WorldDataConfiguration(new net.minecraft.world.level.DataPackConfig(List.of("vanilla", "mod_data", "file/shb_slots"), List.of()),
 					net.minecraft.world.flag.FeatureFlags.DEFAULT_FLAGS);
-			LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, false, Difficulty.PEACEFUL, true, new GameRules(FeatureFlags.DEFAULT_FLAGS), packs);
+			LevelSettings settings = new LevelSettings(WORLD, GameType.SURVIVAL, new LevelSettings.DifficultySettings(Difficulty.PEACEFUL, false, false), true, packs);
 			mc.createWorldOpenFlows().createFreshLevel(WORLD, settings, new WorldOptions(20261013L, false, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
 			return;
 		}
@@ -532,8 +532,8 @@ public final class DevScene
 		server.overworld().getGameRules().set(GameRules.SPAWN_MOBS, false, server);
 		server.overworld().getGameRules().set(GameRules.ADVANCE_TIME, false, server);
 		server.overworld().getGameRules().set(GameRules.ADVANCE_WEATHER, false, server);
-		player.level().setDayTime(6000);
-		player.level().setWeatherParameters(6000, 0, false, false);
+		player.level().getServer().getCommands().performPrefixedCommand(player.level().getServer().createCommandSourceStack().withSuppressedOutput(), "time set 6000");
+		player.level().getServer().getCommands().performPrefixedCommand(player.level().getServer().createCommandSourceStack().withSuppressedOutput(), "weather clear");
 		player.setInvulnerable(true);
 		BlockPos spawn = player.level().getRespawnData().pos();
 		int y = player.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawn.getX(), spawn.getZ());
@@ -543,7 +543,27 @@ public final class DevScene
 	/** Gives players all ten slot types (two ring and two curio slots) and makes the scene's items valid in them */
 	static void writeSlotsDataPack(Path pack) throws IOException
 	{
-		accessories.writeSlotsDataPack(pack, itemsBySlot(), 2);
+		accessories.writeSlotsDataPack(pack, itemTypesBySlot(), 2);
+	}
+
+	/**
+	 * The scene's item types by slot type, for the data pack. 26.x: the data pack is written at the title screen, where
+	 * an ItemStack cannot be made yet ("Components not bound yet" until a world's registries are loaded).
+	 */
+	static Map<String, List<net.minecraft.world.item.Item>> itemTypesBySlot()
+	{
+		Map<String, List<net.minecraft.world.item.Item>> items = new LinkedHashMap<>();
+		items.put("curio", List.of(Items.CLOCK, Items.AMETHYST_SHARD));
+		items.put("head", List.of(Items.TURTLE_HELMET));
+		items.put("necklace", List.of(Items.HEART_OF_THE_SEA));
+		items.put("back", List.of(Items.ELYTRA));
+		items.put("body", List.of(Items.ECHO_SHARD));
+		items.put("bracelet", List.of(Items.IRON_CHAIN));
+		items.put("hands", List.of(Items.SHEARS));
+		items.put("ring", List.of(Items.GOLD_NUGGET, Items.EMERALD));
+		items.put("belt", List.of(Items.LEAD));
+		items.put("charm", List.of(Items.TOTEM_OF_UNDYING));
+		return items;
 	}
 
 	/** The scene's Curios by slot type, in the Curios slot order */

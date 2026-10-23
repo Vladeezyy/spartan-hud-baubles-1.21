@@ -39,7 +39,7 @@ public final class NeoForgeNetServerHooks
 	private static int set(CommandContext<CommandSourceStack> context, int count) throws CommandSyntaxException
 	{
 		ServerPlayer player = context.getSource().getPlayerOrException();
-		ItemStack stack = ItemArgument.getItem(context, "item").createItemStack(count, false);
+		ItemStack stack = ItemArgument.getItem(context, "item").createItemStack(count);
 		CuriosApi.getCuriosInventory(player).flatMap(inventory -> inventory.getStacksHandler(StringArgumentType.getString(context, "slot"))).orElseThrow()
 				.getStacks().setStackInSlot(IntegerArgumentType.getInteger(context, "index"), stack);
 		return 1;

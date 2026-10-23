@@ -1,7 +1,7 @@
 package com.oblivioussp.spartanhudbaubles.client.gui;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.data.AtlasIds;
@@ -23,7 +23,7 @@ public record SlotIcon(Identifier location, boolean atlasSprite)
 		return new SlotIcon(texture, false);
 	}
 
-	public void draw(GuiGraphics graphics, int x, int y)
+	public void draw(GuiGraphicsExtractor graphics, int x, int y)
 	{
 		if(atlasSprite)
 			graphics.blitSprite(RenderPipelines.GUI_TEXTURED, location, x, y, 16, 16);

@@ -37,7 +37,7 @@ public interface SceneAccessories
 	 * A data pack that gives players the scene's slot types, in the order of {@code items} (whose items it makes valid
 	 * there), {@code curioSlots} of them for "curio" and as many as listed for the others
 	 */
-	void writeSlotsDataPack(Path pack, Map<String, List<ItemStack>> items, int curioSlots) throws IOException;
+	void writeSlotsDataPack(Path pack, Map<String, List<net.minecraft.world.item.Item>> items, int curioSlots) throws IOException;
 
 	/** Every slot type of the entity */
 	List<Slot> slots(LivingEntity entity);

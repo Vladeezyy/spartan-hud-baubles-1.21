@@ -3,7 +3,7 @@ package com.oblivioussp.spartanhudbaubles.client.event;
 import com.oblivioussp.spartanhudbaubles.client.gui.AlignmentHelper.Alignment;
 
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.common.NeoForge;
  * This event is not {@link ICancellableEvent cancellable}<br>
  * Use the {@link Pre} or {@link Post} events to subscribe to the event bus<br>
  * This event is fired on the {@link NeoForge#EVENT_BUS}, on the client only<br>
- * Port: the GUI and resolution of 1.12 are replaced by {@link GuiGraphics} (its {@code guiWidth()} and {@code guiHeight()}
+ * Port: the GUI and resolution of 1.12 are replaced by {@link GuiGraphicsExtractor} (its {@code guiWidth()} and {@code guiHeight()}
  * are the scaled resolution); the Curios slot type and index of the bauble are new.
  * @author ObliviousSpartan
  *
@@ -27,10 +27,10 @@ public class RenderBaubleOnHUDEvent extends Event
 	protected final int positionX, positionY;
 	protected final Alignment alignment;
 	protected final boolean isVertical;
-	protected final GuiGraphics guiGraphics;
+	protected final GuiGraphicsExtractor guiGraphics;
 	protected final Font font;
 
-	private RenderBaubleOnHUDEvent(ItemStack stack, String slotId, int index, int posX, int posY, Alignment align, boolean vertical, GuiGraphics graphics, Font font)
+	private RenderBaubleOnHUDEvent(ItemStack stack, String slotId, int index, int posX, int posY, Alignment align, boolean vertical, GuiGraphicsExtractor graphics, Font font)
 	{
 		itemStack = stack;
 		slotIdentifier = slotId;
@@ -84,7 +84,7 @@ public class RenderBaubleOnHUDEvent extends Event
 		return isVertical;
 	}
 
-	public GuiGraphics getGuiGraphics()
+	public GuiGraphicsExtractor getGuiGraphics()
 	{
 		return guiGraphics;
 	}
@@ -96,7 +96,7 @@ public class RenderBaubleOnHUDEvent extends Event
 
 	public static class Pre extends RenderBaubleOnHUDEvent
 	{
-		public Pre(ItemStack stack, String slotId, int index, int posX, int posY, Alignment align, boolean vertical, GuiGraphics graphics, Font font)
+		public Pre(ItemStack stack, String slotId, int index, int posX, int posY, Alignment align, boolean vertical, GuiGraphicsExtractor graphics, Font font)
 		{
 			super(stack, slotId, index, posX, posY, align, vertical, graphics, font);
 		}
@@ -104,7 +104,7 @@ public class RenderBaubleOnHUDEvent extends Event
 
 	public static class Post extends RenderBaubleOnHUDEvent
 	{
-		public Post(ItemStack stack, String slotId, int index, int posX, int posY, Alignment align, boolean vertical, GuiGraphics graphics, Font font)
+		public Post(ItemStack stack, String slotId, int index, int posX, int posY, Alignment align, boolean vertical, GuiGraphicsExtractor graphics, Font font)
 		{
 			super(stack, slotId, index, posX, posY, align, vertical, graphics, font);
 		}

@@ -12,7 +12,7 @@ import com.oblivioussp.spartanhudbaubles.util.SkinType;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -92,7 +92,7 @@ public class HudElementBaubles extends HudElement
 	}
 
 	@Override
-	public void render(GuiGraphics graphics)
+	public void render(GuiGraphicsExtractor graphics)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		List<Bauble> baublesToRender = List.of();
@@ -190,8 +190,8 @@ public class HudElementBaubles extends HudElement
 			}
 			// Draw the equipped Bauble items
 			Platform.INSTANCE.onRenderBauble(false, stack, bauble.slotIdentifier(), bauble.slotIndex(), offsetX, offsetY, hudAlignment, rotateVertical, graphics, mc.font);
-			graphics.renderItem(stack, offsetX, offsetY);
-			graphics.renderItemDecorations(mc.font, stack, offsetX, offsetY);
+			graphics.item(stack, offsetX, offsetY);
+			graphics.itemDecorations(mc.font, stack, offsetX, offsetY);
 			Platform.INSTANCE.onRenderBauble(true, stack, bauble.slotIdentifier(), bauble.slotIndex(), offsetX, offsetY, hudAlignment, rotateVertical, graphics, mc.font);
 		}
 	}
@@ -202,7 +202,7 @@ public class HudElementBaubles extends HudElement
 	 * repeated. For 1 to 7 slots in one row or column this gives the same pixels as the original, which only had those
 	 * (more than 7 slots showed no skin at all).
 	 */
-	private static void drawHotbarSkin(GuiGraphics graphics, int x, int y, int columns, int rows)
+	private static void drawHotbarSkin(GuiGraphicsExtractor graphics, int x, int y, int columns, int rows)
 	{
 		int[][] uPieces = skinPieces(columns);
 		int[][] vPieces = skinPieces(rows);
@@ -258,7 +258,7 @@ public class HudElementBaubles extends HudElement
 	 * Draws the HUD element: the loader puts it right above the experience bar, where the original drew it (NeoForge:
 	 * a GUI layer above VanillaGuiLayers.EXPERIENCE_LEVEL, Fabric: a mixin at the end of Gui.renderExperienceLevel)
 	 */
-	public static void onHUDOverlay(GuiGraphics graphics, DeltaTracker deltaTracker)
+	public static void onHUDOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		if(Config.DISABLE_HUD.get() || mc.options.hideGui || mc.player == null)
