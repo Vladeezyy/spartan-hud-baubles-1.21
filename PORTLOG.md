@@ -175,3 +175,21 @@ module is not in this branch. No Parchment for 1.21.11 (plain Mojang names).
   - compatibility (Sodium 0.8.14, Iris 1.10.8 with Complementary Reimagined r5.9.3, Lithium 0.21.4, FerriteCore 8.2.0,
     Jade 21.1.7, JEI 27.48): client scene 84/84 with the shader pack on;
   - no FPS measurements (owner's call).
+
+## 26.1.2 (branch mc/26.1.2, 2026-10-23, 1.0.0.3+26.1.2)
+
+NeoForge 26.1.2.122, Curios 15.0.0+26.1.2, JEI 29.47, Java 25. NeoForge only: Trinkets has no 26.1.2 version. No
+Parchment for 26.x (no obfuscation).
+
+- GUI drawing is extraction: `GuiGraphicsExtractor` with `text`, `item`, `blit`/`blitSprite` on pipelines; the
+  element's own `render(GuiGraphicsExtractor)` keeps its name (the GUI port script renamed it to `extractRenderState`).
+- **The slot data pack of the test world is made from item types**: `new ItemStack` at the title screen crashes on 26.1
+  ("Components not bound yet"), so the scene lists items, not stacks, before the world exists.
+- Test scenes: `LevelSettings(name, mode, new DifficultySettings(...), cheats, packs)`; time and weather by command (the
+  time API moved to clocks); `Minecraft#resizeGui`; `ItemInput#createItemStack(count)` in the multiplayer command.
+- Checks:
+  - client scene 84/84, multiplayer 6/6;
+  - release jar on a real NeoForge 26.1.2.122 server with Curios and alone: starts clean;
+  - compatibility (Sodium 0.9.2, Iris 1.11.4 with Complementary Reimagined r5.9.3, Lithium 0.24.7, FerriteCore 9.0.0,
+    Jade 26.1.12, ModernFix 5.27.24, JEI 29.47): client scene 84/84 with the shader pack on;
+  - no stress scene and no FPS measurements on 26.1.2 (owner's call).

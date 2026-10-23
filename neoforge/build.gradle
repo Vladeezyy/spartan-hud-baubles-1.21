@@ -64,6 +64,7 @@ dependencies {
         localRuntime "maven.modrinth:lithium:${compat_lithium}"
         localRuntime "maven.modrinth:ferrite-core:${compat_ferritecore}"
         localRuntime "maven.modrinth:jade:${compat_jade}"
+        localRuntime "maven.modrinth:modernfix:${compat_modernfix}"
     }
 }
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 # Compatibility run on LOADER=neoforge|fabric: the client scene with -Pwith_compat (Sodium, Iris with a shader pack
-# from run/shaderpacks, Lithium, FerriteCore, ModernFix, Jade, EMI). Output: build-compat-<loader>.out, screenshots in
+# from run/shaderpacks, Lithium, FerriteCore, ModernFix, Jade; 26.1.2 has no EMI). Output: build-compat-<loader>.out, screenshots in
 # build/compat-<loader>/.
 . "$(dirname "$0")/common.sh"
 mkdir -p "$RUN/shaderpacks" "$RUN/config"

@@ -2,19 +2,19 @@
 
 <img src="docs/images/logo.png" width="320" alt="Spartan HUD: Baubles logo">
 
-# Spartan HUD: Baubles — NeoForge 1.21.11
+# Spartan HUD: Baubles — NeoForge 26.1.2
 
 **See your Curios!**
 
-[![Minecraft 1.21.11](https://img.shields.io/badge/Minecraft-1.21.11-3c8527)](https://www.minecraft.net)
-[![NeoForge 21.11](https://img.shields.io/badge/NeoForge-21.11.48%2B-e0682b)](https://neoforged.net)
+[![Minecraft 26.1.2](https://img.shields.io/badge/Minecraft-26.1.2-3c8527)](https://www.minecraft.net)
+[![NeoForge 26.1](https://img.shields.io/badge/NeoForge-26.1.2.122%2B-e0682b)](https://neoforged.net)
 [![Requires Curios](https://img.shields.io/badge/requires-Curios-8a2be2)](#installation)
 [![Client side](https://img.shields.io/badge/side-client%20only-informational)](#installation)
 [![License LGPL-3.0](https://img.shields.io/badge/license-LGPL--3.0-blue)](LICENSE)
 
 An unofficial port of **Spartan HUD: Baubles** 1.0.0 by **ObliviousSpartan** from Minecraft 1.12.2 (Baubles) to
-**NeoForge 1.21.11** with **Curios**, the 1.21 successor of Baubles. This is the 1.21.11 branch; the 1.21.1 version for
-NeoForge (Curios) and Fabric (Trinkets) is on [`main`](../../tree/main). Trinkets has no 1.21.11 version, so 1.21.11 is
+**NeoForge 26.1.2** with **Curios**, the 1.21 successor of Baubles. This is the 26.1.2 branch; the 1.21.1 version for
+NeoForge (Curios) and Fabric (Trinkets) is on [`main`](../../tree/main), 1.21.11 on [`mc/1.21.11`](../../tree/mc/1.21.11). Trinkets has no 26.1.2 version, so 26.1.2 is
 NeoForge only.
 
 </div>
@@ -58,8 +58,8 @@ Baubles HUD with more options.
 
 ## Installation
 
-1. Install **NeoForge 21.11.48** or newer for Minecraft **1.21.11** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 14.0.0+1.21.11** or newer.
-2. Put `spartanhudbaubles-neoforge-1.0.0.3+1.21.11.jar` from the [releases](../../releases) into the `mods` folder of
+1. Install **NeoForge 26.1.2.122** or newer for Minecraft **26.1.2** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 15.0.0+26.1.2** or newer.
+2. Put `spartanhudbaubles-neoforge-1.0.0.3+26.1.2.jar` from the [releases](../../releases) into the `mods` folder of
    your **client**.
 
 The mod is **client-side only**: servers do not need it (they need Curios for the accessories themselves). It does
@@ -126,7 +126,7 @@ Baubles icon. The Preview HUD has no lone **Done** button floating over the cros
 
 ## Compatibility
 
-Tested with Curios 14.0.0, JEI, and in a compatibility run with Sodium, Iris, Lithium, FerriteCore and Jade. Any mod adding Curios slots or items works. Accessories is not supported directly (it may work through its Curios
+Tested with Curios 15.0.0, JEI, and in a compatibility run with Sodium, Iris, Lithium, FerriteCore, ModernFix and Jade. Any mod adding Curios slots or items works. Accessories is not supported directly (it may work through its Curios
 compatibility layer; not tested).
 
 ## Testing
@@ -135,14 +135,14 @@ compatibility layer; not tested).
   Curios, wrapped rows, empty slots, every skin, all 9 alignments horizontal and vertical, offsets, F1, spectator, live
   durability, a Curio breaking in its slot, the config GUI and the preview through real clicks, the saved file, the main
   menu preview, translations. That the element is really drawn is checked by comparing the frame with one drawn
-  without it. Run on NeoForge 21.11.48 with Curios 14.0.0.
-- **Stress** (`-Pscene=stress`): 13 checks — a broken config file at start, 74 Curios, 200 ticks of random changes,
+  without it. Run on NeoForge 26.1.2.122 with Curios 15.0.0.
+- **Stress** (`-Pscene=stress`, run on 1.21.11, not on 26.1.2): 13 checks — a broken config file at start, 74 Curios, 200 ticks of random changes,
   GUI scales 1–4 and an 854×480 window with every alignment,
   extreme offsets, one slot per line, leaving and rejoining the world.
 - **Multiplayer** (`tools/nettest.sh`): a client on a dedicated server, Curios equipped on the server: 6 checks.
-- **Release jar** on a real NeoForge **21.11.48** server, with and without Curios: starts, no errors.
-- **Compatibility**: Sodium 0.8.14, Iris 1.10.8 with Complementary shaders, Lithium 0.21.4, FerriteCore 8.2.0,
-  Jade 21.1.7, JEI 27.48: the client scene, 84/84.
+- **Release jar** on a real NeoForge **26.1.2.122** server, with and without Curios: starts, no errors.
+- **Compatibility**: Sodium 0.9.2, Iris 1.11.4 with Complementary shaders, Lithium 0.24.7, FerriteCore 9.0.0,
+  Jade 26.1.12, ModernFix 5.27.24, JEI 29.47: the client scene, 84/84.
 - Details: [PORTLOG.md](PORTLOG.md).
 
 ## Source and credits
@@ -151,7 +151,7 @@ compatibility layer; not tested).
   [GitHub](https://github.com/ObliviousSpartan/SpartanHUD-Baubles),
   [CurseForge](https://www.curseforge.com/minecraft/mc-mods/spartan-hud-baubles). Credits of the original: Shivaxi for
   the ideas, the RLCraft modpack team for testing and feedback.
-- Port to NeoForge 1.21.1 / 1.21.11 (Curios) and Fabric 1.21.1 (Trinkets): **Vladeezyy**.
+- Port to NeoForge 1.21.1 / 1.21.11 / 26.1.2 (Curios) and Fabric 1.21.1 (Trinkets): **Vladeezyy**.
 
 ## License
 
@@ -195,11 +195,11 @@ from its official pages.
 
 ## Установка
 
-Это ветка 1.21.11; версия 1.21.1 для NeoForge (Curios) и Fabric (Trinkets) — в [`main`](../../tree/main). У Trinkets нет
-версии под 1.21.11, поэтому 1.21.11 — только NeoForge.
+Это ветка 26.1.2; версия 1.21.1 для NeoForge (Curios) и Fabric (Trinkets) — в [`main`](../../tree/main), 1.21.11 — в [`mc/1.21.11`](../../tree/mc/1.21.11). У Trinkets нет
+версии под 26.1.2, поэтому 26.1.2 — только NeoForge.
 
-1. Установите **NeoForge 21.11.48** или новее для Minecraft **1.21.11** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 14.0.0+1.21.11** или новее.
-2. Положите `spartanhudbaubles-neoforge-1.0.0.3+1.21.11.jar` из [релизов](../../releases) в папку `mods` **клиента**.
+1. Установите **NeoForge 26.1.2.122** или новее для Minecraft **26.1.2** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 15.0.0+26.1.2** или новее.
+2. Положите `spartanhudbaubles-neoforge-1.0.0.3+26.1.2.jar` из [релизов](../../releases) в папку `mods` **клиента**.
 
 Мод **только клиентский**: серверу он не нужен (серверу нужен Curios для самих предметов). Если сборка кладёт его на
 сервер, он там ничего не делает.
@@ -257,7 +257,7 @@ from its official pages.
 
 ## Совместимость
 
-Проверено с Curios 14.0.0, JEI и в прогоне совместимости с Sodium, Iris, Lithium, FerriteCore и Jade.
+Проверено с Curios 15.0.0, JEI и в прогоне совместимости с Sodium, Iris, Lithium, FerriteCore, ModernFix и Jade.
 Работает с любыми модами, добавляющими ячейки или предметы Curios. Accessories напрямую не поддерживается (может
 работать через его слой совместимости с Curios; не проверялось).
 
@@ -267,14 +267,14 @@ from its official pages.
   предметах, перенос рядов, пустые ячейки, все оформления, все 9 положений по горизонтали и вертикали, сдвиги, F1,
   наблюдатель, прочность на лету, поломка предмета в ячейке, окно настроек и предпросмотр настоящими кликами, сохранение
   файла, предпросмотр из главного меню, переводы. Что элемент действительно нарисован, проверяется сравнением кадра с
-  кадром без него. Прогнано на NeoForge 21.11.48 с Curios 14.0.0.
-- **Стресс** (`-Pscene=stress`): 13 проверок — испорченный файл настроек при запуске, 74 предмета, 200 тиков случайных
+  кадром без него. Прогнано на NeoForge 26.1.2.122 с Curios 15.0.0.
+- **Стресс** (`-Pscene=stress`, прогнан на 1.21.11, на 26.1.2 — нет): 13 проверок — испорченный файл настроек при запуске, 74 предмета, 200 тиков случайных
   изменений, масштабы GUI 1–4 и окно 854×480 со всеми положениями, крайние
   сдвиги, одна ячейка в ряду, выход и повторный вход в мир.
 - **Сетевая игра** (`tools/nettest.sh`): клиент на выделенном сервере, предметы надеваются на сервере: 6 проверок.
-- **Release jar** на настоящем сервере NeoForge **21.11.48**, с Curios и без: запускается без ошибок.
-- **Совместимость**: Sodium 0.8.14, Iris 1.10.8 с шейдерами Complementary, Lithium 0.21.4, FerriteCore 8.2.0,
-  Jade 21.1.7, JEI 27.48: клиентская сцена 84/84.
+- **Release jar** на настоящем сервере NeoForge **26.1.2.122**, с Curios и без: запускается без ошибок.
+- **Совместимость**: Sodium 0.9.2, Iris 1.11.4 с шейдерами Complementary, Lithium 0.24.7, FerriteCore 9.0.0,
+  Jade 26.1.12, ModernFix 5.27.24, JEI 29.47: клиентская сцена 84/84.
 - Подробности: [PORTLOG.md](PORTLOG.md).
 
 ## Исходники и авторы
@@ -283,7 +283,7 @@ from its official pages.
   [GitHub](https://github.com/ObliviousSpartan/SpartanHUD-Baubles),
   [CurseForge](https://www.curseforge.com/minecraft/mc-mods/spartan-hud-baubles). Благодарности оригинала: Shivaxi за
   идеи, команде сборки RLCraft за тестирование.
-- Порт на NeoForge 1.21.1 / 1.21.11 (Curios) и Fabric 1.21.1 (Trinkets): **Vladeezyy**.
+- Порт на NeoForge 1.21.1 / 1.21.11 / 26.1.2 (Curios) и Fabric 1.21.1 (Trinkets): **Vladeezyy**.
 
 ## Лицензия
 
