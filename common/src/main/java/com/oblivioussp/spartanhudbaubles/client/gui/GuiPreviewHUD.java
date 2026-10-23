@@ -55,7 +55,7 @@ public class GuiPreviewHUD extends Screen
 	@Override
 	public void onClose()
 	{
-		minecraft.setScreen(parentScreen);
+		minecraft.gui.setScreen(parentScreen);
 	}
 
 	@Override

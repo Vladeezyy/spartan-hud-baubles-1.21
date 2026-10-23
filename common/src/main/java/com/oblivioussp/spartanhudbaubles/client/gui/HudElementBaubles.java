@@ -261,10 +261,10 @@ public class HudElementBaubles extends HudElement
 	public static void onHUDOverlay(GuiGraphicsExtractor graphics, DeltaTracker deltaTracker)
 	{
 		Minecraft mc = Minecraft.getInstance();
-		if(Config.DISABLE_HUD.get() || mc.options.hideGui || mc.player == null)
+		if(Config.DISABLE_HUD.get() || mc.gui.hud.isHidden() || mc.player == null)
 			return;
 		// Don't render the HUD if the Preview HUD GUI is being displayed
-		if(mc.screen instanceof GuiPreviewHUD)
+		if(mc.gui.screen() instanceof GuiPreviewHUD)
 			return;
 		if(ACTIVE == null)
 			ACTIVE = new HudElementBaubles();

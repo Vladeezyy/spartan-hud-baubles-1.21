@@ -25,17 +25,17 @@ public final class NetScene
 		if(!ENABLED)
 			return;
 		Minecraft mc = Minecraft.getInstance();
-		if(mc.screen instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)
+		if(mc.gui.screen() instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)
 		{
 			mc.options.onboardAccessibility = false;
 			mc.options.save();
-			mc.setScreen(new TitleScreen());
+			mc.gui.setScreen(new TitleScreen());
 			return;
 		}
 		if(mc.player == null || mc.getConnection() == null)
 			return;
 		mc.options.pauseOnLostFocus = false;
-		mc.getToastManager().clear();
+		mc.gui.toastManager().clear();
 		tick++;
 		try
 		{

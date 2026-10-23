@@ -26,6 +26,6 @@ public class GuiConfigSHB extends ConfigurationScreen.ConfigurationSectionScreen
 		super.init();
 		Component hudEdit = Component.translatable(ModSpartanHUDBaubles.ID + ".configuration.preview_hud");
 		int width = font.width(hudEdit) + 20;
-		addRenderableWidget(Button.builder(hudEdit, button -> minecraft.setScreen(new GuiPreviewHUD(this))).bounds(5, 5, width, 20).build());
+		addRenderableWidget(Button.builder(hudEdit, button -> minecraft.gui.setScreen(new GuiPreviewHUD(this))).bounds(5, 5, width, 20).build());
 	}
 }

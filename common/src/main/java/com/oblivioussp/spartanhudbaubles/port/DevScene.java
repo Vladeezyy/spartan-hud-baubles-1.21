@@ -236,11 +236,11 @@ public final class DevScene
 		at(t += 5, mc -> check("disable_hud: nothing drawn", framePre.isEmpty(), framePre.size()));
 		at(t += 1, mc -> {
 			Config.DISABLE_HUD.set(false);
-			mc.options.hideGui = true;
+			setHudHidden(mc, true);
 		});
 		at(t += 5, mc -> check("F1 (hidden GUI): nothing drawn", framePre.isEmpty(), framePre.size()));
 		at(t += 1, mc -> {
-			mc.options.hideGui = false;
+			setHudHidden(mc, false);
 			server(mc, p -> p.setGameMode(GameType.SPECTATOR));
 		});
 		at(t += 10, mc -> check("spectator: nothing drawn", framePre.isEmpty(), framePre.size()));
@@ -248,50 +248,50 @@ public final class DevScene
 		at(t += 10, mc -> check("survival again: drawn", framePre.size() == 6, framePre.size()));
 		// The config GUI from the mods list, the Preview HUD button, a value changed by a click
 		at(t += 3, mc -> openConfig(mc, null));
-		at(t += 10, mc -> check("config GUI opens on the client settings with the Preview HUD button", isConfigScreen(mc.screen) && previewButton(mc.screen) != null, mc.screen));
+		at(t += 10, mc -> check("config GUI opens on the client settings with the Preview HUD button", isConfigScreen(mc.gui.screen()) && previewButton(mc.gui.screen()) != null, mc.gui.screen()));
 		at(t += 2, mc -> shot(mc, "config"));
-		at(t += 3, mc -> click(mc, previewButton(mc.screen)));
+		at(t += 3, mc -> click(mc, previewButton(mc.gui.screen())));
 		at(t += 5, mc -> {
-			check("Preview HUD button opens the preview", mc.screen instanceof GuiPreviewHUD, mc.screen);
+			check("Preview HUD button opens the preview", mc.gui.screen() instanceof GuiPreviewHUD, mc.gui.screen());
 			check("preview: no in-game HUD element behind it", framePre.isEmpty(), framePre.size());
 		});
 		at(t += 3, mc -> shot(mc, "preview_ingame"));
 		at(t += 3, mc -> {
-			if(mc.screen instanceof GuiPreviewHUD preview)
+			if(mc.gui.screen() instanceof GuiPreviewHUD preview)
 			{
 				check("preview: 7 dummy slots, bottom right", preview.getHud().getWidth() == 130 && preview.getHud().getLastX() == mc.getWindow().getGuiScaledWidth() - 130, preview.getHud().getLastX());
 				check("preview: no lone button, title and hint at the top", preview.children().isEmpty() && preview.getTextY() == 8, preview.children().size() + ", text at " + preview.getTextY());
 			}
-			mc.screen.keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
+			mc.gui.screen().keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
 		});
 		at(t += 5, mc -> {
-			check("Escape returns to the config GUI", isConfigScreen(mc.screen), mc.screen);
-			click(mc, valueButton(mc.screen, Config.SKIN_TYPE.get()));
+			check("Escape returns to the config GUI", isConfigScreen(mc.gui.screen()), mc.gui.screen());
+			click(mc, valueButton(mc.gui.screen(), Config.SKIN_TYPE.get()));
 		});
 		at(t += 5, mc -> {
 			check("clicking the skin type button changes the value (hotbar -> tooltip)", Config.SKIN_TYPE.get() == SkinType.TOOLTIP_STYLE, Config.SKIN_TYPE.get());
-			click(mc, previewButton(mc.screen));
+			click(mc, previewButton(mc.gui.screen()));
 		});
 		at(t += 5, mc -> shot(mc, "preview_ingame_tooltip"));
 		at(t += 3, mc -> Config.ALIGNMENT.set(Alignment.TOP_CENTER));
 		at(t += 3, mc -> {
-			if(mc.screen instanceof GuiPreviewHUD preview)
+			if(mc.gui.screen() instanceof GuiPreviewHUD preview)
 				check("preview: title and hint move out of a top centre HUD", preview.getTextY() == preview.height / 2 - 50, preview.getTextY());
 			shot(mc, "preview_top_center");
 			Config.ALIGNMENT.set(Alignment.BOTTOM_RIGHT);
 		});
 		at(t += 3, mc -> {
 			// A click anywhere closes the preview
-			mc.screen.mouseClicked(new MouseButtonEvent(100, 100, new MouseButtonInfo(0, 0)), false);
+			mc.gui.screen().mouseClicked(new MouseButtonEvent(100, 100, new MouseButtonInfo(0, 0)), false);
 		});
 		at(t += 5, mc -> {
-			check("a click anywhere closes the preview", isConfigScreen(mc.screen), mc.screen);
-			mc.screen.onClose();
+			check("a click anywhere closes the preview", isConfigScreen(mc.gui.screen()), mc.gui.screen());
+			mc.gui.screen().onClose();
 			watchScreens = 12;
 		});
 		at(t += 10, mc -> {
 			String file = readConfigFile();
-			check("closing the config GUI saves the file", mc.screen == null && file.contains("skin_type = \"TOOLTIP_STYLE\""), file.lines().filter(l -> l.contains("skin_type")).findFirst().orElse(file.isEmpty() ? "no file" : "no skin_type"));
+			check("closing the config GUI saves the file", mc.gui.screen() == null && file.contains("skin_type = \"TOOLTIP_STYLE\""), file.lines().filter(l -> l.contains("skin_type")).findFirst().orElse(file.isEmpty() ? "no file" : "no skin_type"));
 			Config.SKIN_TYPE.set(SkinType.HOTBAR_STYLE);
 			Config.SPEC.save();
 			checkTranslations();
@@ -335,17 +335,24 @@ public final class DevScene
 		if(!ENABLED)
 			return;
 		Minecraft mc = Minecraft.getInstance();
-		if(!opened && mc.screen instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)
+		if(!opened && mc.gui.screen() instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)
 		{
 			mc.options.onboardAccessibility = false;
 			mc.options.save();
-			mc.setScreen(new TitleScreen());
+			mc.gui.setScreen(new TitleScreen());
 			return;
 		}
 		// The language switch reloads the resources; the world is created after that, not during it
-		if(!opened && mc.getOverlay() != null)
+		if(!opened && mc.gui.overlay() != null)
 			return;
-		if(!opened && mc.screen instanceof TitleScreen)
+		// NeoForge 26.2: load warnings (e.g. another mod's deprecated logoFile) open LoadingErrorScreen before the menu
+		if(!opened && mc.gui.screen() != null && mc.gui.screen().getClass().getSimpleName().equals("LoadingErrorScreen"))
+		{
+			Log.info("[scene] NeoForge load warnings screen, going on to the main menu");
+			mc.gui.setScreen(new TitleScreen());
+			return;
+		}
+		if(!opened && mc.gui.screen() instanceof TitleScreen)
 		{
 			if(!mc.options.languageCode.equals(LANG))
 			{
@@ -380,8 +387,8 @@ public final class DevScene
 		if(watchScreens > 0)
 		{
 			watchScreens--;
-			Log.info("[scene] screen after closing: " + (mc.screen == null ? "none" : mc.screen.getClass().getName()));
-			if(mc.screen != null && !(mc.screen instanceof TitleScreen))
+			Log.info("[scene] screen after closing: " + (mc.gui.screen() == null ? "none" : mc.gui.screen().getClass().getName()));
+			if(mc.gui.screen() != null && !(mc.gui.screen() instanceof TitleScreen))
 				shot(mc, "closing_" + watchShots++);
 		}
 		if(menuPhase)
@@ -393,9 +400,9 @@ public final class DevScene
 			return;
 		mc.options.pauseOnLostFocus = false;
 		mc.getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
-		mc.getToastManager().clear();
-		if(mc.screen instanceof PauseScreen)
-			mc.setScreen(null);
+		mc.gui.toastManager().clear();
+		if(mc.gui.screen() instanceof PauseScreen)
+			mc.gui.setScreen(null);
 		tick++;
 		for(Pair<Integer, Consumer<Minecraft>> step : STEPS)
 		{
@@ -418,26 +425,26 @@ public final class DevScene
 	/** The main menu: the config GUI from the title screen and its Preview HUD with the mock vanilla HUD */
 	private static void menuSteps(Minecraft mc)
 	{
-		if(!(mc.screen instanceof TitleScreen) && menuTick == 0)
+		if(!(mc.gui.screen() instanceof TitleScreen) && menuTick == 0)
 			return;
 		menuTick++;
 		try
 		{
 			switch(menuTick)
 			{
-				case 20 -> openConfig(mc, mc.screen);
-				case 30 -> click(mc, previewButton(mc.screen));
+				case 20 -> openConfig(mc, mc.gui.screen());
+				case 30 -> click(mc, previewButton(mc.gui.screen()));
 				case 40 -> {
-					check("main menu: Preview HUD opens without a world", mc.screen instanceof GuiPreviewHUD && mc.level == null, mc.screen);
+					check("main menu: Preview HUD opens without a world", mc.gui.screen() instanceof GuiPreviewHUD && mc.level == null, mc.gui.screen());
 					shot(mc, "preview_menu");
 				}
 				case 50 -> {
-					mc.screen.keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
-					mc.screen.onClose();
+					mc.gui.screen().keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
+					mc.gui.screen().onClose();
 					watchScreens = 8;
 				}
 				case 60 -> {
-					check("main menu: back on the title screen", mc.screen instanceof TitleScreen, mc.screen);
+					check("main menu: back on the title screen", mc.gui.screen() instanceof TitleScreen, mc.gui.screen());
 					Log.info("[scene] DONE, failed checks: " + failures);
 					mc.stop();
 				}
@@ -521,7 +528,7 @@ public final class DevScene
 
 	static void shot(Minecraft mc, String name)
 	{
-		Screenshot.grab(mc.gameDirectory, "scene_" + name + ".png", mc.getMainRenderTarget(), 1, c -> Log.info("[scene] " + c.getString()));
+		Screenshot.grab(mc.gameDirectory, "scene_" + name + ".png", mc.gameRenderer.mainRenderTarget(), 1, c -> Log.info("[scene] " + c.getString()));
 	}
 
 	// ------------------------------------------------------------------------------------------------------ world
@@ -695,7 +702,7 @@ public final class DevScene
 	private static void captureBaseline(Minecraft mc)
 	{
 		// The frame arrives once the GPU has copied it (before the next scene step)
-		Screenshot.takeScreenshot(mc.getMainRenderTarget(), image ->
+		Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image ->
 		{
 			try(image)
 			{
@@ -712,7 +719,7 @@ public final class DevScene
 	static void checkDrawn(Minecraft mc, String name, int gx, int gy, int gw, int gh, boolean drawn)
 	{
 		double scale = mc.getWindow().getGuiScale();
-		Screenshot.takeScreenshot(mc.getMainRenderTarget(), image ->
+		Screenshot.takeScreenshot(mc.gameRenderer.mainRenderTarget(), image ->
 		{
 			int changed = 0, total = 0;
 			try(image)
@@ -756,7 +763,7 @@ public final class DevScene
 
 	static void openConfig(Minecraft mc, Screen parent)
 	{
-		mc.setScreen(accessories.configScreen(mc, parent));
+		mc.gui.setScreen(accessories.configScreen(mc, parent));
 	}
 
 	static AbstractWidget previewButton(Screen screen)
@@ -796,13 +803,13 @@ public final class DevScene
 	{
 		if(widget == null)
 		{
-			check("widget to click found", false, mc.screen);
+			check("widget to click found", false, mc.gui.screen());
 			return;
 		}
 		double x = widget.getX() + widget.getWidth() / 2.0, y = widget.getY() + widget.getHeight() / 2.0;
-		mc.screen.mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)), false);
-		if(mc.screen != null)
-			mc.screen.mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)));
+		mc.gui.screen().mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)), false);
+		if(mc.gui.screen() != null)
+			mc.gui.screen().mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)));
 	}
 
 	private static String readConfigFile()
@@ -836,5 +843,12 @@ public final class DevScene
 	static Identifier id(String path)
 	{
 		return Identifier.fromNamespaceAndPath(ModSpartanHUDBaubles.ID, path);
+	}
+
+	/** 26.2: the HUD is hidden through Minecraft.gui.hud, which only toggles */
+	private static void setHudHidden(net.minecraft.client.Minecraft mc, boolean hidden)
+	{
+		if(mc.gui.hud.isHidden() != hidden)
+			mc.gui.hud.toggle();
 	}
 }

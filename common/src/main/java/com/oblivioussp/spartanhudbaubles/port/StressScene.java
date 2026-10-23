@@ -259,16 +259,22 @@ public final class StressScene
 		if(!ENABLED)
 			return;
 		Minecraft mc = Minecraft.getInstance();
-		if(mc.screen instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)
+		if(mc.gui.screen() instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)
 		{
 			mc.options.onboardAccessibility = false;
 			mc.options.save();
-			mc.setScreen(new TitleScreen());
+			mc.gui.setScreen(new TitleScreen());
 			return;
 		}
-		if(mc.getOverlay() != null)
+		if(mc.gui.overlay() != null)
 			return;
-		if(mc.player == null && mc.screen instanceof TitleScreen && !opening)
+		// NeoForge 26.2: load warnings (e.g. another mod's deprecated logoFile) open LoadingErrorScreen before the menu
+		if(mc.player == null && mc.gui.screen() != null && mc.gui.screen().getClass().getSimpleName().equals("LoadingErrorScreen"))
+		{
+			mc.gui.setScreen(new TitleScreen());
+			return;
+		}
+		if(mc.player == null && mc.gui.screen() instanceof TitleScreen && !opening)
 		{
 			opening = true;
 			if(phase == 0)
@@ -295,17 +301,17 @@ public final class StressScene
 				mc.createWorldOpenFlows().createFreshLevel(WORLD, settings, new WorldOptions(20261013L, false, false), WorldPresets::createNormalWorldDimensions, new TitleScreen());
 			}
 			else
-				mc.createWorldOpenFlows().openWorld(WORLD, () -> mc.setScreen(new TitleScreen()));
+				mc.createWorldOpenFlows().openWorld(WORLD, () -> mc.gui.setScreen(new TitleScreen()));
 			return;
 		}
 		if(mc.player == null || mc.getSingleplayerServer() == null)
 			return;
 		opening = false;
 		mc.options.pauseOnLostFocus = false;
-		mc.getToastManager().clear();
+		mc.gui.toastManager().clear();
 		mc.getTutorial().setStep(net.minecraft.client.tutorial.TutorialSteps.NONE);
-		if(mc.screen instanceof PauseScreen)
-			mc.setScreen(null);
+		if(mc.gui.screen() instanceof PauseScreen)
+			mc.gui.setScreen(null);
 		tick++;
 		if(phase == 1)
 		{
