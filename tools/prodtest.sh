@@ -29,8 +29,7 @@ mkdir -p fabric/run-prod-server && echo "eula=true" > fabric/run-prod-server/eul
 rm -rf fabric/run-prod-server/world
 LOG=build-prodserver-fabric.log
 ./gradlew :fabric:prodServer --console=plain > "$LOG" 2>&1 &
-i=0
-until grep -qE 'Done \(|Crash report|crash report|BUILD FAILED|Exception in server tick' "$LOG" 2>/dev/null || [ $i -gt 300 ]; do sleep 2; i=$((i+1)); done
+wait_started "$LOG" 'Done \(|Crash report|crash report|BUILD FAILED|Exception in server tick'
 sleep 3
 pkill -f "fabric.addMods=.*$MOD-fabric" 2>/dev/null; sleep 3
 grep -E 'Done \(|Crash report|crash report|BUILD FAILED' "$LOG" | head -3
