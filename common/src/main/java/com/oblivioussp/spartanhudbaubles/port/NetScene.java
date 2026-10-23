@@ -18,6 +18,7 @@ public final class NetScene
 {
 	private static final boolean ENABLED = DevScene.MODE.equals("net");
 	private static int tick;
+	private static boolean warningsLogged;
 
 	// The loader modules call this after every client tick (port/*SceneHooks)
 	public static void onTick()
@@ -25,6 +26,29 @@ public final class NetScene
 		if(!ENABLED)
 			return;
 		Minecraft mc = Minecraft.getInstance();
+		// NeoForge 26.2: load warnings (Curios' deprecated logoFile) open LoadingErrorScreen first; its "Proceed" button
+		// (x 50, y height - 24, the text is translated) carries on with the quick play connection
+		if(mc.gui.screen() != null && mc.gui.screen().getClass().getSimpleName().equals("LoadingErrorScreen"))
+		{
+			net.minecraft.client.gui.screens.Screen screen = mc.gui.screen();
+			net.minecraft.client.gui.components.AbstractButton proceed = null;
+			StringBuilder seen = new StringBuilder();
+			for(var child : screen.children())
+				if(child instanceof net.minecraft.client.gui.components.AbstractButton button)
+				{
+					seen.append(button.getMessage().getString()).append('@').append(button.getX()).append(',').append(button.getY()).append(' ');
+					if(button.getX() == 50 && (proceed == null || button.getY() > proceed.getY()))
+						proceed = button;
+				}
+			if(!warningsLogged)
+			{
+				warningsLogged = true;
+				Log.info("[scene] NeoForge load warnings screen: " + seen + "-> " + (proceed == null ? "no button yet" : proceed.getMessage().getString()));
+			}
+			if(proceed != null)
+				proceed.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
+			return;
+		}
 		if(mc.gui.screen() instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)
 		{
 			mc.options.onboardAccessibility = false;

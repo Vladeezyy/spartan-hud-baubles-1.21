@@ -8,6 +8,11 @@ NET="$LOADER/run-net"
 SLOG=build-netserver-$LOADER.log
 CLOG=build-netclient-$LOADER.log
 kill_dev
+# Another server on the port (a leftover run of any project) would take the client: no run then
+if command -v lsof >/dev/null 2>&1 && lsof -iTCP:25565 -sTCP:LISTEN >/dev/null 2>&1; then
+	echo "PORT BUSY: something already listens on port 25565:"; lsof -iTCP:25565 -sTCP:LISTEN | tail -n +2 | cut -c1-120
+	exit 1
+fi
 rm -rf "$NET/world" "$SLOG" "$CLOG"
 mkdir -p "$NET" && echo "eula=true" > "$NET/eula.txt"
 printf 'online-mode=false\nspawn-protection=0\ndifficulty=peaceful\ninitial-enabled-packs=vanilla,file/shb_slots\n' > "$NET/server.properties"

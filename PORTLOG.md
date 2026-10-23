@@ -193,3 +193,19 @@ Parchment for 26.x (no obfuscation).
   - compatibility (Sodium 0.9.2, Iris 1.11.4 with Complementary Reimagined r5.9.3, Lithium 0.24.7, FerriteCore 9.0.0,
     Jade 26.1.12, ModernFix 5.27.24, JEI 29.47): client scene 84/84 with the shader pack on;
   - no stress scene and no FPS measurements on 26.1.2 (owner's call).
+
+## 26.2 (branch mc/26.2, 2026-10-23, 1.0.0.3+26.2)
+
+NeoForge 26.2.0.93, Curios 16.0.0+26.2, JEI 30.47, Java 25. NeoForge only: Trinkets has no 26.2 version.
+
+- `Minecraft.gui` holds the screen, the overlay, the toasts and the HUD: the element hides with `gui.hud.isHidden()`
+  (the `hideGui` option is gone); the scenes hide the HUD through `gui.hud.toggle()`.
+- `bannerFile` instead of the deprecated `logoFile`. Curios 16 still uses `logoFile`, so NeoForge opens its load
+  warnings screen before the menu: the scenes go on past it, the multiplayer scene presses its "Proceed" button (a new
+  screen would drop the quick play connection).
+- Checks:
+  - client scene 84/84, multiplayer 6/6;
+  - release jar on a real NeoForge 26.2.0.93 server with Curios and alone: starts clean;
+  - compatibility (Sodium 0.9.2, Iris 1.11.4 with Complementary Reimagined r5.9.3, Lithium 0.25.3, FerriteCore 9.0.0,
+    Jade 26.2.10, JEI 30.47): client scene 84/84 with the shader pack on;
+  - no stress scene and no FPS measurements on 26.2 (owner's call).
