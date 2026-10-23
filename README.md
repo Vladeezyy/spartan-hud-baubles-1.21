@@ -141,8 +141,9 @@ compatibility layer; not tested).
   extreme offsets, one slot per line, leaving and rejoining the world.
 - **Multiplayer** (`tools/nettest.sh`): a client on a dedicated server, Curios equipped on the server: 6 checks.
 - **Release jar** on a real NeoForge **26.3.0.95** server, with and without Curios: starts, no errors.
-- **Compatibility**: Sodium 0.9.2, Iris 1.11.4 with Complementary shaders, Lithium 0.25.3, FerriteCore 9.0.0,
-  Jade 26.3.10, JEI 30.47: the client scene, 84/84.
+- **Compatibility**: Sodium 0.9.3 beta, Iris 1.11.7, Lithium 0.26.2, FerriteCore 9.0.0, Jade 26.3.5, JEI 31.16: the
+  client scene, 84/84, with the shader pack off (Iris 1.11.7 for NeoForge 26.3 crashes in its render passes with one on,
+  with vanilla content too).
 - Details: [PORTLOG.md](PORTLOG.md).
 
 ## Source and credits
@@ -273,8 +274,9 @@ from its official pages.
   сдвиги, одна ячейка в ряду, выход и повторный вход в мир.
 - **Сетевая игра** (`tools/nettest.sh`): клиент на выделенном сервере, предметы надеваются на сервере: 6 проверок.
 - **Release jar** на настоящем сервере NeoForge **26.3.0.95**, с Curios и без: запускается без ошибок.
-- **Совместимость**: Sodium 0.9.2, Iris 1.11.4 с шейдерами Complementary, Lithium 0.25.3, FerriteCore 9.0.0,
-  Jade 26.3.10, JEI 30.47: клиентская сцена 84/84.
+- **Совместимость**: Sodium 0.9.3 beta, Iris 1.11.7, Lithium 0.26.2, FerriteCore 9.0.0, Jade 26.3.5, JEI 31.16:
+  клиентская сцена 84/84 без шейдерпака (Iris 1.11.7 для NeoForge 26.3 с ним падает в своих проходах рендера, и на
+  ванильном контенте).
 - Подробности: [PORTLOG.md](PORTLOG.md).
 
 ## Исходники и авторы

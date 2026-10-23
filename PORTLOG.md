@@ -222,3 +222,9 @@ NeoForge 26.3.0.95, Curios 17.0.0-beta.3+26.3 (a beta), JEI 31.16, Java 25. NeoF
 - The scene opens the config screen over the pause menu: NeoForge 26.3's config screen opened with no parent closes
   itself inside `Gui.setScreen` on the way back (NullPointerException in setScreen). From the Mods list, as players open
   it, it has a parent.
+- Checks:
+  - client scene 84/84, multiplayer 6/6;
+  - release jar on a real NeoForge 26.3.0.95 server with Curios and alone: starts clean;
+  - compatibility (Sodium 0.9.3 beta, Iris 1.11.7, Lithium 0.26.2, FerriteCore 9.0.0, Jade 26.3.5, JEI 31.16): client
+    scene 84/84 without a shader pack (Iris 1.11.7 for NeoForge 26.3 crashes in its render passes with one on);
+  - no stress scene and no FPS measurements on 26.3 (owner's call).
