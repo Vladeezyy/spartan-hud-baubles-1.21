@@ -39,9 +39,8 @@ fi
 uuid=$(python3 -c 'import hashlib,uuid;h=bytearray(hashlib.md5(b"OfflinePlayer:Dev").digest());h[6]=h[6]&0x0f|0x30;h[8]=h[8]&0x3f|0x80;print(uuid.UUID(bytes=bytes(h)))')
 echo "[{\"uuid\":\"$uuid\",\"name\":\"Dev\",\"level\":4,\"bypassesPlayerLimit\":false}]" > "$NET/ops.json"
 ./gradlew ":$LOADER:runNetServer" --console=plain "$@" > "$SLOG" 2>&1 &
-i=0
-until grep -qE 'Done \(|Minecraft Crash Report|BUILD FAILED' "$SLOG" 2>/dev/null || [ $i -gt 300 ]; do sleep 2; i=$((i+1)); done
-perl -e 'alarm 600; exec @ARGV' ./gradlew ":$LOADER:runNetClient" --console=plain "$@" > "$CLOG" 2>&1
+wait_started "$SLOG" 'Done \(|Minecraft Crash Report|BUILD FAILED' || { kill_dev; exit 124; }
+run_watched "$CLOG" 600 ":$LOADER:runNetClient" "$@"
 kill_dev; sleep 3
 wait 2>/dev/null
 grep -E '\[scene\] (CHECK|DONE)' "$CLOG" | sed -E 's/^.*\[scene\] //'
