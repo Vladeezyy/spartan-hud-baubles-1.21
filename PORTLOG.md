@@ -209,3 +209,16 @@ NeoForge 26.2.0.93, Curios 16.0.0+26.2, JEI 30.47, Java 25. NeoForge only: Trink
   - compatibility (Sodium 0.9.2, Iris 1.11.4 with Complementary Reimagined r5.9.3, Lithium 0.25.3, FerriteCore 9.0.0,
     Jade 26.2.10, JEI 30.47): client scene 84/84 with the shader pack on;
   - no stress scene and no FPS measurements on 26.2 (owner's call).
+
+## 26.3 (branch mc/26.3, 2026-10-23, 1.0.0.3+26.3)
+
+NeoForge 26.3.0.95, Curios 17.0.0-beta.3+26.3 (a beta), JEI 31.16, Java 25. NeoForge only: Trinkets has no 26.3 version.
+
+- **Curios 17**: `CuriosResources.MOD_ID` (was CuriosApi.MODID), `CuriosSlotTypes.getSlotType(id, client)` (was
+  CuriosApi.getSlot), `CuriosSlotTypes.getDefaultEntitySlotTypes(entity)`. The slot icons are the same sprites. Curios 17
+  uses `iconFile`, so NeoForge's load warnings screen is gone again.
+- **SDL input** (GLFW is gone): the scenes click with `MOUSE_BUTTON_LEFT` (1; a click with button 0 does nothing), the
+  window size through `Window.setWindowed`.
+- The scene opens the config screen over the pause menu: NeoForge 26.3's config screen opened with no parent closes
+  itself inside `Gui.setScreen` on the way back (NullPointerException in setScreen). From the Mods list, as players open
+  it, it has a parent.

@@ -7,13 +7,11 @@ CHECK OK   net: new durability shown without opening the inventory (400)
 CHECK OK   net: removed ring leaves the HUD ([curio#1, necklace#0, back#0, ring#0])
 DONE, failed checks: 0
 --- server: mods and packs
-[main/INFO] [ne.ne.fm.lo.mo.lo.InDevFolderLocator/CORE]: Got mod coordinates spartanhudbaubles%%/Users/vladeezy/Desktop/spartan-hud-baubles-26.2/neoforge/build/classes/java/main:spartanhudbaubles%%/Us
+[main/INFO] [ne.ne.fm.lo.mo.lo.InDevFolderLocator/CORE]: Got mod coordinates spartanhudbaubles%%/Users/vladeezy/Desktop/spartan-hud-baubles-26.3/neoforge/build/classes/java/main:spartanhudbaubles%%/Us
 		Spartan HUD: Baubles 1.0.0.3 (spartanhudbaubles)
- - spartanhudbaubles (composite(folder(/Users/vladeezy/Desktop/spartan-hud-baubles-26.2/neoforge/build/classes/java/main), folder(/Users/vladeezy/Desktop/spartan-hud-baubles-26.2/neoforge/build/resour
+ - spartanhudbaubles (composite(folder(/Users/vladeezy/Desktop/spartan-hud-baubles-26.3/neoforge/build/classes/java/main), folder(/Users/vladeezy/Desktop/spartan-hud-baubles-26.3/neoforge/build/resour
 [Server thread/INFO] [Curios API/]: Loaded 11 curio slots
 [Server thread/INFO] [Curios API/]: Loaded 1 curio entities
 --- server errors
-   1 io.netty.channel.unix.Errors$NativeIoException: readAddress(..) failed with error(-54): Connection reset by peer
    1 [Server thread/INFO] [minecraft/ServerGamePacketListenerImpl]: Dev lost connection: Disconnected
-   1 [Netty Kqueue IO #1/ERROR] [minecraft/Connection]: Exception caught in connection
 --- client errors

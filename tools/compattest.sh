@@ -1,11 +1,14 @@
 #!/bin/sh
 # Compatibility run on LOADER=neoforge|fabric: the client scene with -Pwith_compat (Sodium, Iris with a shader pack
-# from run/shaderpacks, Lithium, FerriteCore, ModernFix, Jade; 26.1.2 has no EMI). Output: build-compat-<loader>.out, screenshots in
+# from run/shaderpacks, Lithium, FerriteCore, Jade; 26.3 has no ModernFix or EMI). Output: build-compat-<loader>.out, screenshots in
 # build/compat-<loader>/.
 . "$(dirname "$0")/common.sh"
 mkdir -p "$RUN/shaderpacks" "$RUN/config"
 cp run/shaderpacks/*.zip "$RUN/shaderpacks/" 2>/dev/null
 [ -f run/config/iris.properties ] && cp run/config/iris.properties "$RUN/config/"
+# NO_SHADERS=1: Iris without its shader pack (Iris 1.11.7 for NeoForge 26.3 crashes in its render passes with one on:
+# "Missing uniform InSampler")
+[ -n "$NO_SHADERS" ] && sed -i.bak 's/^enableShaders=.*/enableShaders=false/' "$RUN/config/iris.properties" && rm -f "$RUN/config/iris.properties.bak"
 # NeoForge 21.11 wraps the GPU device in its validation layer in dev runs; Sodium and Iris cast it to GlDevice and crash
 C="$RUN/config/neoforge-client.toml"
 if [ -f "$C" ] && grep -q enableB3DValidationLayer "$C"; then sed -i.bak 's/^enableB3DValidationLayer.*/enableB3DValidationLayer = false/' "$C"; else echo 'enableB3DValidationLayer = false' >> "$C"; fi
