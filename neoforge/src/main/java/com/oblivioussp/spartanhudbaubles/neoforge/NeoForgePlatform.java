@@ -20,6 +20,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
 import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.CuriosResources;
+import top.theillusivec4.curios.api.CuriosSlotTypes;
 import top.theillusivec4.curios.api.type.ISlotType;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
@@ -29,8 +31,8 @@ public class NeoForgePlatform implements Platform
 {
 	// Port: the Curios inventory button replaces the Baubles icon, and the generic Curio slot icon the empty Bauble
 	// slot of the preview (both were drawn from Baubles' expanded_inventory.png)
-	private static final Identifier CURIOS_ICON = Identifier.fromNamespaceAndPath(CuriosApi.MODID, "textures/gui/curios/button.png");
-	private static final SlotIcon DUMMY_SLOT_ICON = SlotIcon.sprite(Identifier.fromNamespaceAndPath(CuriosApi.MODID, "slot/empty_curio_slot"));
+	private static final Identifier CURIOS_ICON = Identifier.fromNamespaceAndPath(CuriosResources.MOD_ID, "textures/gui/curios/button.png");
+	private static final SlotIcon DUMMY_SLOT_ICON = SlotIcon.sprite(Identifier.fromNamespaceAndPath(CuriosResources.MOD_ID, "slot/empty_curio_slot"));
 
 	@Override
 	public String name()
@@ -71,7 +73,8 @@ public class NeoForgePlatform implements Platform
 
 	private static Optional<ISlotType> slotType(Player player, String identifier)
 	{
-		return CuriosApi.getSlot(identifier, player.level());
+		// Curios 17: the slot types by id (the client or the server side ones)
+		return Optional.ofNullable(CuriosSlotTypes.getSlotType(identifier, player.level().isClientSide()));
 	}
 
 	@Override

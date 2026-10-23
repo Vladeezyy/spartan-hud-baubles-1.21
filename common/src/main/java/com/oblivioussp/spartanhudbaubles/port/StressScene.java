@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-import org.lwjgl.glfw.GLFW;
 
 import com.mojang.datafixers.util.Pair;
 import com.oblivioussp.spartanhudbaubles.ModSpartanHUDBaubles;
@@ -101,12 +100,12 @@ public final class StressScene
 		}
 		at(t += 5, mc -> {
 			mc.options.guiScale().set(0);
-			GLFW.glfwSetWindowSize(mc.getWindow().handle(), 854, 480);
+			mc.getWindow().setWindowed(854, 480);
 		});
 		t = alignments(t + 10, "small window 854x480, auto GUI scale");
 		at(t += 5, mc -> DevScene.shot(mc, "stress_small"));
 		at(t += 5, mc -> {
-			GLFW.glfwSetWindowSize(mc.getWindow().handle(), 1600, 900);
+			mc.getWindow().setWindowed(1600, 900);
 			mc.options.guiScale().set(3);
 			mc.resizeGui();
 			Config.ALIGNMENT.set(Alignment.BOTTOM_RIGHT);
@@ -199,7 +198,7 @@ public final class StressScene
 		server.overworld().getGameRules().set(GameRules.SPAWN_MOBS, false, server);
 		server.overworld().getGameRules().set(GameRules.ADVANCE_TIME, false, server);
 		player.level().getServer().getCommands().performPrefixedCommand(player.level().getServer().createCommandSourceStack().withSuppressedOutput(), "time set 6000");
-		player.setInvulnerable(true);
+		player.setPermanentlyInvulnerable(true);
 		player.teleportTo(player.level(), player.getX(), player.getY(), player.getZ(), java.util.Set.of(), 0.0F, -60.0F, true);
 	}
 
@@ -279,7 +278,7 @@ public final class StressScene
 			opening = true;
 			if(phase == 0)
 			{
-				GLFW.glfwSetWindowSize(mc.getWindow().handle(), 1600, 900);
+				mc.getWindow().setWindowed(1600, 900);
 				mc.options.guiScale().set(3);
 				mc.options.cloudStatus().set(CloudStatus.OFF);
 				mc.options.enableVsync().set(false);

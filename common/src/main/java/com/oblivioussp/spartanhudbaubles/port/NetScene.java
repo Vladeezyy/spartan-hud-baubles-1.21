@@ -46,7 +46,7 @@ public final class NetScene
 				Log.info("[scene] NeoForge load warnings screen: " + seen + "-> " + (proceed == null ? "no button yet" : proceed.getMessage().getString()));
 			}
 			if(proceed != null)
-				proceed.onPress(new net.minecraft.client.input.MouseButtonInfo(0, 0));
+				proceed.onPress(new net.minecraft.client.input.MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0));
 			return;
 		}
 		if(mc.gui.screen() instanceof net.minecraft.client.gui.screens.AccessibilityOnboardingScreen)

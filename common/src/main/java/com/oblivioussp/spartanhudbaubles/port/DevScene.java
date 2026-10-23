@@ -1,5 +1,7 @@
 package com.oblivioussp.spartanhudbaubles.port;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -14,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.datafixers.util.Pair;
@@ -247,7 +248,9 @@ public final class DevScene
 		at(t += 1, mc -> server(mc, p -> p.setGameMode(GameType.SURVIVAL)));
 		at(t += 10, mc -> check("survival again: drawn", framePre.size() == 6, framePre.size()));
 		// The config GUI from the mods list, the Preview HUD button, a value changed by a click
-		at(t += 3, mc -> openConfig(mc, null));
+		// 26.3: with no parent NeoForge's config screen closes itself inside Gui.setScreen on the way back (NPE in setScreen);
+		// in game it is opened from the pause menu's Mods list, so the scene opens it over the pause menu
+		at(t += 3, mc -> openConfig(mc, new net.minecraft.client.gui.screens.PauseScreen(true)));
 		at(t += 10, mc -> check("config GUI opens on the client settings with the Preview HUD button", isConfigScreen(mc.gui.screen()) && previewButton(mc.gui.screen()) != null, mc.gui.screen()));
 		at(t += 2, mc -> shot(mc, "config"));
 		at(t += 3, mc -> click(mc, previewButton(mc.gui.screen())));
@@ -262,7 +265,7 @@ public final class DevScene
 				check("preview: 7 dummy slots, bottom right", preview.getHud().getWidth() == 130 && preview.getHud().getLastX() == mc.getWindow().getGuiScaledWidth() - 130, preview.getHud().getLastX());
 				check("preview: no lone button, title and hint at the top", preview.children().isEmpty() && preview.getTextY() == 8, preview.children().size() + ", text at " + preview.getTextY());
 			}
-			mc.gui.screen().keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
+			mc.gui.screen().keyPressed(new KeyEvent(InputConstants.KEY_ESCAPE, 0, 0));
 		});
 		at(t += 5, mc -> {
 			check("Escape returns to the config GUI", isConfigScreen(mc.gui.screen()), mc.gui.screen());
@@ -282,7 +285,7 @@ public final class DevScene
 		});
 		at(t += 3, mc -> {
 			// A click anywhere closes the preview
-			mc.gui.screen().mouseClicked(new MouseButtonEvent(100, 100, new MouseButtonInfo(0, 0)), false);
+			mc.gui.screen().mouseClicked(new MouseButtonEvent(100, 100, new MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
 		});
 		at(t += 5, mc -> {
 			check("a click anywhere closes the preview", isConfigScreen(mc.gui.screen()), mc.gui.screen());
@@ -291,7 +294,8 @@ public final class DevScene
 		});
 		at(t += 10, mc -> {
 			String file = readConfigFile();
-			check("closing the config GUI saves the file", mc.gui.screen() == null && file.contains("skin_type = \"TOOLTIP_STYLE\""), file.lines().filter(l -> l.contains("skin_type")).findFirst().orElse(file.isEmpty() ? "no file" : "no skin_type"));
+			check("closing the config GUI saves the file", (mc.gui.screen() == null || mc.gui.screen() instanceof net.minecraft.client.gui.screens.PauseScreen) && file.contains("skin_type = \"TOOLTIP_STYLE\""), file.lines().filter(l -> l.contains("skin_type")).findFirst().orElse(file.isEmpty() ? "no file" : "no skin_type"));
+			mc.gui.setScreen(null);
 			Config.SKIN_TYPE.set(SkinType.HOTBAR_STYLE);
 			Config.SPEC.save();
 			checkTranslations();
@@ -363,7 +367,7 @@ public final class DevScene
 				return;
 			}
 			opened = true;
-			GLFW.glfwSetWindowSize(mc.getWindow().handle(), 1600, 900);
+			mc.getWindow().setWindowed(1600, 900);
 			mc.options.guiScale().set(3);
 			mc.options.cloudStatus().set(CloudStatus.OFF);
 			mc.options.pauseOnLostFocus = false;
@@ -439,7 +443,7 @@ public final class DevScene
 					shot(mc, "preview_menu");
 				}
 				case 50 -> {
-					mc.gui.screen().keyPressed(new KeyEvent(GLFW.GLFW_KEY_ESCAPE, 0, 0));
+					mc.gui.screen().keyPressed(new KeyEvent(InputConstants.KEY_ESCAPE, 0, 0));
 					mc.gui.screen().onClose();
 					watchScreens = 8;
 				}
@@ -541,7 +545,7 @@ public final class DevScene
 		server.overworld().getGameRules().set(GameRules.ADVANCE_WEATHER, false, server);
 		player.level().getServer().getCommands().performPrefixedCommand(player.level().getServer().createCommandSourceStack().withSuppressedOutput(), "time set 6000");
 		player.level().getServer().getCommands().performPrefixedCommand(player.level().getServer().createCommandSourceStack().withSuppressedOutput(), "weather clear");
-		player.setInvulnerable(true);
+		player.setPermanentlyInvulnerable(true);
 		BlockPos spawn = player.level().getRespawnData().pos();
 		int y = player.level().getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawn.getX(), spawn.getZ());
 		player.teleportTo(player.level(), spawn.getX() + 0.5, y, spawn.getZ() + 0.5, java.util.Set.of(), 30.0F, 5.0F, true);
@@ -807,9 +811,9 @@ public final class DevScene
 			return;
 		}
 		double x = widget.getX() + widget.getWidth() / 2.0, y = widget.getY() + widget.getHeight() / 2.0;
-		mc.gui.screen().mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)), false);
+		mc.gui.screen().mouseClicked(new MouseButtonEvent(x, y, new MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0)), false);
 		if(mc.gui.screen() != null)
-			mc.gui.screen().mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(0, 0)));
+			mc.gui.screen().mouseReleased(new MouseButtonEvent(x, y, new MouseButtonInfo(com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT, 0)));
 	}
 
 	private static String readConfigFile()

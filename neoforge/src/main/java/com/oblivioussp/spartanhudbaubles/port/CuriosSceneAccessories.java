@@ -90,7 +90,7 @@ final class CuriosSceneAccessories implements SceneAccessories
 	@Override
 	public String describe(ServerPlayer player)
 	{
-		return "player slots " + CuriosApi.getPlayerSlots(player).keySet() + ", inventory " + CuriosApi.getCuriosInventory(player).map(i -> i.getCurios().keySet()).orElse(null);
+		return "player slots " + top.theillusivec4.curios.api.CuriosSlotTypes.getDefaultEntitySlotTypes(player).keySet() + ", inventory " + CuriosApi.getCuriosInventory(player).map(i -> i.getCurios().keySet()).orElse(null);
 	}
 
 	@Override
