@@ -9,8 +9,8 @@
 [![Minecraft 1.21.1](https://img.shields.io/badge/Minecraft-1.21.1-3c8527)](https://www.minecraft.net)
 [![NeoForge 21.1](https://img.shields.io/badge/NeoForge-21.1.197%2B-e0682b)](https://neoforged.net)
 [![Fabric 0.16](https://img.shields.io/badge/Fabric-0.16.14%2B-dbd0b4)](https://fabricmc.net)
-[![Requires Curios or Trinkets](https://img.shields.io/badge/requires-Curios%20%2F%20Trinkets-8a2be2)](#installation)
-[![Client side](https://img.shields.io/badge/side-client%20only-informational)](#installation)
+[![Requires Curios or Trinkets](https://img.shields.io/badge/requires-Curios%20%2F%20Trinkets-8a2be2)](#requirements)
+[![Client side](https://img.shields.io/badge/side-client%20only-informational)](#requirements)
 [![License LGPL-3.0](https://img.shields.io/badge/license-LGPL--3.0-blue)](LICENSE)
 
 An unofficial port of **Spartan HUD: Baubles** 1.0.0 by **ObliviousSpartan** from Minecraft 1.12.2 (Baubles) to
@@ -55,21 +55,15 @@ Baubles HUD with more options.
   <img src="docs/images/preview_menu.jpg" width="49%" alt="The Preview HUD screen from the main menu">
 </p>
 
-## Installation
+## Requirements
 
 **NeoForge**
 
-1. Install **NeoForge 21.1.197** or newer for Minecraft **1.21.1** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** or newer.
-2. Put `spartanhudbaubles-neoforge-1.0.0.3+1.21.1.jar` from the [releases](../../releases) into the `mods` folder of
-   your **client**.
+- **NeoForge 21.1.197** or newer for Minecraft **1.21.1** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** or newer.
 
 **Fabric**
 
-1. Install **Fabric Loader 0.16.14** or newer for Minecraft **1.21.1**, **[Fabric API](https://modrinth.com/mod/fabric-api)**,
-   **[Trinkets](https://modrinth.com/mod/trinkets) 3.10.0** or newer and
-   **[Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) 21.1.6** or newer (the settings).
-2. Put `spartanhudbaubles-fabric-1.0.0.3+1.21.1.jar` from the [releases](../../releases) into the `mods` folder of
-   your **client**.
+- **Fabric Loader 0.16.14** or newer for Minecraft **1.21.1**, **[Fabric API](https://modrinth.com/mod/fabric-api)**, **[Trinkets](https://modrinth.com/mod/trinkets) 3.10.0** or newer and **[Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) 21.1.6** or newer (the settings).
 
 The mod is **client-side only**: servers do not need it (they need Curios / Trinkets for the accessories themselves).
 It does nothing on a server if a modpack ships it there. On Fabric the slots are Trinkets' (`hand/ring`, ...), in the
@@ -207,19 +201,15 @@ from its official pages.
 См. английский раздел выше: [HUD](docs/images/hud.jpg), [оформления и раскладки](docs/images/skins.jpg),
 [настройки](docs/images/config.jpg), [предпросмотр из меню](docs/images/preview_menu.jpg).
 
-## Установка
+## Требования
 
 **NeoForge**
 
-1. Установите **NeoForge 21.1.197** или новее для Minecraft **1.21.1** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** или новее.
-2. Положите `spartanhudbaubles-neoforge-1.0.0.3+1.21.1.jar` из [релизов](../../releases) в папку `mods` **клиента**.
+- **NeoForge 21.1.197** или новее для Minecraft **1.21.1** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 9.5.1+1.21.1** или новее.
 
 **Fabric**
 
-1. Установите **Fabric Loader 0.16.14** или новее для Minecraft **1.21.1**, **[Fabric API](https://modrinth.com/mod/fabric-api)**,
-   **[Trinkets](https://modrinth.com/mod/trinkets) 3.10.0** или новее и
-   **[Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) 21.1.6** или новее (настройки).
-2. Положите `spartanhudbaubles-fabric-1.0.0.3+1.21.1.jar` из [релизов](../../releases) в папку `mods` **клиента**.
+- **Fabric Loader 0.16.14** или новее для Minecraft **1.21.1**, **[Fabric API](https://modrinth.com/mod/fabric-api)**, **[Trinkets](https://modrinth.com/mod/trinkets) 3.10.0** или новее и **[Forge Config API Port](https://modrinth.com/mod/forge-config-api-port) 21.1.6** или новее (настройки).
 
 Мод **только клиентский**: серверу он не нужен (серверу нужен Curios / Trinkets для самих предметов). Если сборка
 кладёт его на сервер, он там ничего не делает. На Fabric ячейки — ячейки Trinkets (`hand/ring`, …), в порядке
