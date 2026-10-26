@@ -8,8 +8,8 @@
 
 [![Minecraft 26.3](https://img.shields.io/badge/Minecraft-26.3-3c8527)](https://www.minecraft.net)
 [![NeoForge 26.3](https://img.shields.io/badge/NeoForge-26.3.0.95%2B-e0682b)](https://neoforged.net)
-[![Requires Curios](https://img.shields.io/badge/requires-Curios-8a2be2)](#installation)
-[![Client side](https://img.shields.io/badge/side-client%20only-informational)](#installation)
+[![Requires Curios](https://img.shields.io/badge/requires-Curios-8a2be2)](#requirements)
+[![Client side](https://img.shields.io/badge/side-client%20only-informational)](#requirements)
 [![License LGPL-3.0](https://img.shields.io/badge/license-LGPL--3.0-blue)](LICENSE)
 
 An unofficial port of **Spartan HUD: Baubles** 1.0.0 by **ObliviousSpartan** from Minecraft 1.12.2 (Baubles) to
@@ -56,11 +56,9 @@ Baubles HUD with more options.
   <img src="docs/images/preview_menu.jpg" width="49%" alt="The Preview HUD screen from the main menu">
 </p>
 
-## Installation
+## Requirements
 
-1. Install **NeoForge 26.3.0.95** or newer for Minecraft **26.3** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 17.0.0-beta.3+26.3** or newer.
-2. Put `spartanhudbaubles-neoforge-1.0.0.3+26.3.jar` from the [releases](../../releases) into the `mods` folder of
-   your **client**.
+- **NeoForge 26.3.0.95** or newer for Minecraft **26.3** and **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 17.0.0-beta.3+26.3** or newer.
 
 The mod is **client-side only**: servers do not need it (they need Curios for the accessories themselves). It does
 nothing on a server if a modpack ships it there.
@@ -194,13 +192,12 @@ from its official pages.
 См. английский раздел выше: [HUD](docs/images/hud.jpg), [оформления и раскладки](docs/images/skins.jpg),
 [настройки](docs/images/config.jpg), [предпросмотр из меню](docs/images/preview_menu.jpg).
 
-## Установка
+## Требования
 
 Это ветка 26.3; версия 1.21.1 для NeoForge (Curios) и Fabric (Trinkets) — в [`main`](../../tree/main), 1.21.11 — в [`mc/1.21.11`](../../tree/mc/1.21.11), 26.1.2 — в [`mc/26.1.2`](../../tree/mc/26.1.2), 26.2 — в [`mc/26.2`](../../tree/mc/26.2). У Trinkets нет
 версии под 26.3, поэтому 26.3 — только NeoForge.
 
-1. Установите **NeoForge 26.3.0.95** или новее для Minecraft **26.3** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 17.0.0-beta.3+26.3** или новее.
-2. Положите `spartanhudbaubles-neoforge-1.0.0.3+26.3.jar` из [релизов](../../releases) в папку `mods` **клиента**.
+- **NeoForge 26.3.0.95** или новее для Minecraft **26.3** и **[Curios](https://www.curseforge.com/minecraft/mc-mods/curios) 17.0.0-beta.3+26.3** или новее.
 
 Мод **только клиентский**: серверу он не нужен (серверу нужен Curios для самих предметов). Если сборка кладёт его на
 сервер, он там ничего не делает.
