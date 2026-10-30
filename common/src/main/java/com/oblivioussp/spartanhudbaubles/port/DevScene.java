@@ -86,6 +86,10 @@ public final class DevScene
 	private static int[] baseline;
 	private static int baselineWidth;
 	private static ItemStack brokenRing;
+	// Issue #1: the next frame empties the last drawn slot's stack while the HUD draws the first one
+	private static boolean emptyInFrame;
+	private static boolean takenOut;
+	private static ItemStack takenRing;
 	// Ticks left in which the open screen is logged and saved (closing the config GUI)
 	private static int watchScreens;
 	private static int watchShots;
@@ -178,6 +182,16 @@ public final class DevScene
 		at(t += 2, mc -> {
 			shot(mc, "empty_slots");
 			Config.SHOW_EMPTY_SLOTS.set(false);
+		});
+		// Issue #1 (GitHub): a slot emptied in place between two ticks (taking a Curio out in the inventory splits its
+		// stack) while the HUD still has it from this tick; the HUD drew the missing slot icon of a filled slot (crash)
+		at(t += 3, mc -> {
+			takenRing = clientStack(mc, "ring", 1).copy();
+			emptyInFrame = true;
+		});
+		at(t += 5, mc -> {
+			check("a ring taken out within a frame: no crash, the frame goes on (issue #1)", takenOut && framePre.size() == 1, takenOut + ", drawn " + framePre.size());
+			accessories.slot(mc.player, "ring").set(1, takenRing);
 		});
 		// Skins
 		at(t += 3, mc -> server(mc, p -> equip(p, firstOf(allItems(), 6))));
@@ -496,8 +510,17 @@ public final class DevScene
 	/** RenderBaubleOnHUDEvent.Pre (Fabric: RenderBaubleOnHUDCallback.PRE) */
 	public static void onBaublePre(int x, int y)
 	{
-		if(!MODE.isEmpty())
-			collectingPre.add(new int[] { x, y });
+		if(MODE.isEmpty())
+			return;
+		if(emptyInFrame)
+		{
+			emptyInFrame = false;
+			List<Bauble> drawing = HudElementBaubles.getActive().getLastRendered();
+			ItemStack last = drawing.get(drawing.size() - 1).stack();
+			takenOut = drawing.size() == 2 && !last.isEmpty();
+			last.setCount(0);
+		}
+		collectingPre.add(new int[] { x, y });
 	}
 
 	public static void onBaublePost()
