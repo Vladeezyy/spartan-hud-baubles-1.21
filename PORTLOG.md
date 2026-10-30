@@ -152,3 +152,8 @@ on 1.21 any mod that adds Curios slots or items is supported.
 - Test: the client scene empties the last ring's stack inside a frame, from the Pre event of the first ring (as the
   inventory does), and checks that the frame goes on. Without the fix the scene crashes with the reported NPE.
 - Client scene 85/85 on NeoForge and Fabric 1.21.1.
+
+## Release 1.0.0.4 (2026-10-31)
+
+- The fix above. Release jars: real NeoForge 21.1.197 and 21.1.259 servers (with Curios and alone) and a dedicated Fabric server with Trinkets start clean; Fabric production client: scene 85/85, stress 13/13 (270 FPS without the HUD element, 252 with 74 accessories).
+- The first run of these server checks failed with "FAILED TO BIND TO PORT" (another project's server had port 25565 for a while); the rerun passed.
