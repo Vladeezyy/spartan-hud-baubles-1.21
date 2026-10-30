@@ -138,3 +138,17 @@ on 1.21 any mod that adds Curios slots or items is supported.
 - Later the same day: the compatibility runs had Iris without its shader pack (`shaderPack=` was empty in the copied
   `iris.properties`). Repeated with Complementary Reimagined r5.9.3 on: 84/84 on both loaders. The frame comparison now
   allows one changed pixel where nothing should be drawn (under shaders the world moves between the two frames).
+
+## Port bug: crash when an accessory is taken out (2026-10-31, [our issue #1](https://github.com/Vladeezyy/spartan-hud-baubles-1.21/issues/1))
+
+- Reported on NeoForge 1.21.1 with a trinket that adds slots: taking it out crashed the game with
+  `NullPointerException: Cannot invoke "SlotIcon.draw(...)" because the return value of "HudElementBaubles$Bauble.icon()" is null`.
+- Cause (all versions, both loaders): the element collects the slots once per tick, and the list holds the live stacks.
+  Taking an item out in the inventory splits its stack, so the stack in the list turns empty in place between two
+  ticks; the element drew it as an empty slot, but a filled slot is collected without an icon. Not specific to items
+  that add slots: any item taken out between ticks while the HUD draws.
+- Fix: an empty stack without an icon draws nothing until the next tick collects the slots again (one frame at most).
+  No extra work per frame.
+- Test: the client scene empties the last ring's stack inside a frame, from the Pre event of the first ring (as the
+  inventory does), and checks that the frame goes on. Without the fix the scene crashes with the reported NPE.
+- Client scene 85/85 on NeoForge and Fabric 1.21.1.

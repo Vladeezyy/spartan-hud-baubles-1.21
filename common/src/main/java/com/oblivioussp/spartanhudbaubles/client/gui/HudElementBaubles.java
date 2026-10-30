@@ -185,8 +185,10 @@ public class HudElementBaubles extends HudElement
 			ItemStack stack = bauble.stack();
 			if(stack.isEmpty())
 			{
-				// An empty slot (show_empty_slots): its icon, as in the accessory mod's inventory
-				bauble.icon().draw(graphics, offsetX, offsetY);
+				// An empty slot (show_empty_slots): its icon, as in the accessory mod's inventory. A filled slot that was
+				// emptied since this tick's collect (an item taken out in the inventory) has no icon: nothing until the next tick
+				if(bauble.icon() != null)
+					bauble.icon().draw(graphics, offsetX, offsetY);
 				continue;
 			}
 			// Draw the equipped Bauble items
