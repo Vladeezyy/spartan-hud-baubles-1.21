@@ -189,3 +189,7 @@ module is not in this branch. No Parchment for 1.21.11 (plain Mojang names).
 - Test: the client scene empties the last ring's stack inside a frame, from the Pre event of the first ring (as the
   inventory does), and checks that the frame goes on. Without the fix the scene crashes with the reported NPE.
 - Client scene 85/85 on NeoForge 1.21.11.
+
+## Release 1.0.0.4 (2026-10-31)
+
+- The fix above. Client scene 85/85; the release jar on the real NeoForge server, with Curios and alone: starts clean.
