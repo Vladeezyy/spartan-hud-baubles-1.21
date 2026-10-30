@@ -193,3 +193,17 @@ Parchment for 26.x (no obfuscation).
   - compatibility (Sodium 0.9.2, Iris 1.11.4 with Complementary Reimagined r5.9.3, Lithium 0.24.7, FerriteCore 9.0.0,
     Jade 26.1.12, ModernFix 5.27.24, JEI 29.47): client scene 84/84 with the shader pack on;
   - no stress scene and no FPS measurements on 26.1.2 (owner's call).
+
+## Port bug: crash when an accessory is taken out (2026-10-31, [our issue #1](https://github.com/Vladeezyy/spartan-hud-baubles-1.21/issues/1))
+
+- Reported on NeoForge 1.21.1 with a trinket that adds slots: taking it out crashed the game with
+  `NullPointerException: Cannot invoke "SlotIcon.draw(...)" because the return value of "HudElementBaubles$Bauble.icon()" is null`.
+- Cause (all versions, both loaders): the element collects the slots once per tick, and the list holds the live stacks.
+  Taking an item out in the inventory splits its stack, so the stack in the list turns empty in place between two
+  ticks; the element drew it as an empty slot, but a filled slot is collected without an icon. Not specific to items
+  that add slots: any item taken out between ticks while the HUD draws.
+- Fix: an empty stack without an icon draws nothing until the next tick collects the slots again (one frame at most).
+  No extra work per frame.
+- Test: the client scene empties the last ring's stack inside a frame, from the Pre event of the first ring (as the
+  inventory does), and checks that the frame goes on. Without the fix the scene crashes with the reported NPE.
+- Client scene 85/85 on NeoForge 26.1.2.
